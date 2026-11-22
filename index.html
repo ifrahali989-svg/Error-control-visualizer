@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AlgoVision — Error Control & Noisy Communication Channel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            obsidian: {
+              950: '#09090b',
+              900: '#101014',
+              850: '#16161d',
+              800: '#1e1e28',
+              700: '#2a2a38',
+            },
+            violetGlow: {
+              500: '#8b5cf6',
+              400: '#a855f7',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #09090b;
+      color: #f4f4f5;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Custom Scrollbars for AlgoVision sleek feel */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #09090b;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #27273a;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #8b5cf6;
+    }
+
+    /* Signal Wave Animation */
+    @keyframes pulseFlow {
+      0% { stroke-dashoffset: 48; }
+      100% { stroke-dashoffset: 0; }
+    }
+    .animate-flow {
+      stroke-dasharray: 8 4;
+      animation: pulseFlow 1.2s linear infinite;
+    }
+
+    @keyframes glitchShake {
+      0%, 100% { transform: translateY(0); }
+      25% { transform: translateY(-2px) scale(1.03); }
+      75% { transform: translateY(2px) scale(0.98); }
+    }
+    .bit-error-pulse {
+      animation: glitchShake 0.45s ease-in-out;
+      box-shadow: 0 0 16px rgba(244, 63, 94, 0.55);
+    }
+
+    .code-line-active {
+      background: linear-gradient(90deg, rgba(139, 92, 246, 0.25) 0%, rgba(168, 85, 247, 0.08) 100%);
+      border-left: 3px solid #a855f7;
+    }
+
+    .glass-panel {
+      background: rgba(16, 16, 20, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-violet-500/30 selection:text-violet-200">
+
+  <!-- Top Navigation & AlgoVision Header -->
+  <header class="border-b border-zinc-800/80 bg-[#0c0c10]/95 backdrop-blur-md sticky top-0 z-30">
+    <div class="max-w-[1600px] mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+      <!-- Brand + Breadcrumb -->
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-600 to-fuchsia-600 flex items-center justify-center shadow-lg shadow-violet-600/25">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-bold tracking-tight text-white text-base">AlgoVision</span>
+            <span class="text-zinc-600">/</span>
+            <span class="text-xs font-mono px-2 py-0.5 rounded-md bg-violet-500/15 text-violet-300 border border-violet-500/30">Data Comm & Networks</span>
+          </div>
+          <h1 class="text-xs sm:text-sm text-zinc-400 font-medium">Error Control, Error Types, Noisy Channel & Terminology</h1>
+        </div>
+      </div>
+
+      <!-- Playback Controls (AlgoVision Style) -->
+      <div class="flex items-center gap-2 bg-obsidian-900 border border-zinc-800 rounded-xl p-1.5">
+        <button id="btnReset" title="Reset Simulation" class="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition flex items-center gap-1.5 text-xs font-medium">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          <span class="hidden sm:inline">Reset</span>
+        </button>
+
+        <button id="btnPlayPause" class="px-3.5 py-2 rounded-lg bg-violet-600 hover:bg-violet-500 text-white font-semibold text-xs flex items-center gap-1.5 shadow-md shadow-violet-600/25 transition">
+          <svg id="iconPlay" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/></svg>
+          <svg id="iconPause" class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M5.75 3a.75.75 0 00-.75.75v12.5c0 .414.336.75.75.75h1.5a.75.75 0 00.75-.75V3.75A.75.75 0 007.25 3h-1.5zM12.75 3a.75.75 0 00-.75.75v12.5c0 .414.336.75.75.75h1.5a.75.75 0 00.75-.75V3.75a.75.75 0 00-.75-.75h-1.5z"/></svg>
+          <span id="playLabel">Auto Play</span>
+        </button>
+
+        <button id="btnStep" class="px-3 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-medium text-xs flex items-center gap-1.5 transition border border-zinc-700/70">
+          <span>Next Step</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </button>
+
+        <div class="hidden md:flex items-center gap-2 pl-2 pr-1 border-l border-zinc-800">
+          <span class="text-[11px] text-zinc-400 font-mono">Speed</span>
+          <input id="speedRange" type="range" min="400" max="2000" step="200" value="1100" class="w-20 accent-violet-500 cursor-pointer">
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive Input & Parameter Configuration Bar -->
+    <div class="border-t border-zinc-800/70 bg-[#111116]">
+      <div class="max-w-[1600px] mx-auto px-4 py-2.5 grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+        
+        <!-- User Custom Input (Binary or Decimal Number!) -->
+        <div class="md:col-span-4 flex flex-col gap-1">
+          <div class="flex items-center justify-between">
+            <label for="userDataInput" class="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
+              1. User Data Input <span class="text-violet-400">(Binary or Decimal)</span>
+            </label>
+            <div class="flex gap-1">
+              <button data-preset="1011001" class="preset-btn text-[10px] font-mono px-1.5 py-0.5 rounded bg-zinc-800 hover:bg-violet-600/30 text-zinc-300 border border-zinc-700">1011001</button>
+              <button data-preset="11010110" class="preset-btn text-[10px] font-mono px-1.5 py-0.5 rounded bg-zinc-800 hover:bg-violet-600/30 text-zinc-300 border border-zinc-700">11010110</button>
+              <button data-preset="75" class="preset-btn text-[10px] font-mono px-1.5 py-0.5 rounded bg-zinc-800 hover:bg-violet-600/30 text-emerald-300 border border-zinc-700">Dec: 75</button>
+            </div>
+          </div>
+          <div class="relative flex items-center">
+            <input id="userDataInput" type="text" value="1011001" maxlength="16" placeholder="Type binary (10110) or number (e.g. 42)"
+              class="w-full bg-obsidian-950 border border-zinc-700/90 focus:border-violet-500 focus:ring-1 focus:ring-violet-500 rounded-lg px-3 py-1.5 font-mono text-sm text-emerald-400 outline-none transition" />
+            <span id="inputConversionBadge" class="absolute right-2 text-[10px] font-mono px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400">
+              7-bit BIN
+            </span>
+          </div>
+        </div>
+
+        <!-- Error Control Technique -->
+        <div class="md:col-span-3 flex flex-col gap-1">
+          <label for="methodSelect" class="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
+            2. Error Control Scheme
+          </label>
+          <select id="methodSelect" class="w-full bg-obsidian-950 border border-zinc-700/90 focus:border-violet-500 rounded-lg px-3 py-1.5 text-sm text-zinc-100 outline-none cursor-pointer">
+            <option value="parity_even">Simple Parity Check (Even Parity)</option>
+            <option value="parity_odd">Simple Parity Check (Odd Parity)</option>
+            <option value="crc">CRC (Cyclic Redundancy Check - G: 1101)</option>
+            <option value="checksum">Internet Checksum (4-bit Block Sum)</option>
+          </select>
+        </div>
+
+        <!-- Channel Error Type -->
+        <div class="md:col-span-3 flex flex-col gap-1">
+          <label for="errorTypeSelect" class="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
+            3. Channel Condition & Error Type
+          </label>
+          <select id="errorTypeSelect" class="w-full bg-obsidian-950 border border-zinc-700/90 focus:border-violet-500 rounded-lg px-3 py-1.5 text-sm text-zinc-100 outline-none cursor-pointer">
+            <option value="single">Single-Bit Error (1 bit flipped)</option>
+            <option value="burst">Burst Error (3 contiguous bits corrupted)</option>
+            <option value="double">Double-Bit Error (2 bits flipped — Parity trap!)</option>
+            <option value="none">Clean Channel (0 Noise / Ideal Medium)</option>
+          </select>
+        </div>
+
+        <!-- Manual / Random Noise Trigger -->
+        <div class="md:col-span-2 flex flex-col gap-1">
+          <label class="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
+            4. Live Noise Control
+          </label>
+          <button id="btnInjectNoise" class="w-full py-1.5 px-3 rounded-lg bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/40 font-semibold text-xs flex items-center justify-center gap-1.5 transition">
+            <span>⚡ Inject Random Noise</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Step Progress Stepper Bar -->
+  <div class="bg-[#0d0d12] border-b border-zinc-800/80 px-4 py-2">
+    <div class="max-w-[1600px] mx-auto flex items-center justify-between gap-2 overflow-x-auto">
+      <div class="flex items-center gap-1 sm:gap-2 min-w-max" id="stepStepper">
+        <!-- Steps populated by JS -->
+      </div>
+      <div id="liveStatusPill" class="text-xs font-mono px-2.5 py-1 rounded-full bg-violet-500/15 text-violet-300 border border-violet-500/30 whitespace-nowrap">
+        Step 1/5: Data Encoding
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Workspace Split View (AlgoVision 2-Column Interactive Stage + Code Trace) -->
+  <main class="flex-1 max-w-[1600px] w-full mx-auto p-4 grid grid-cols-1 lg:grid-cols-12 gap-4">
+
+    <!-- LEFT / CENTER STAGE (7 cols on lg): Live Transmission Canvas + Live Math Calculation -->
+    <div class="lg:col-span-7 flex flex-col gap-4">
+
+      <!-- Visual Simulation Stage: Sender -> Noisy Channel -> Receiver -->
+      <section class="glass-panel rounded-2xl p-4 sm:p-5 flex flex-col gap-4 relative overflow-hidden">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 class="text-sm font-bold text-white flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-violet-500 animate-ping"></span>
+              Live Communication Channel Pipeline
+            </h2>
+            <p class="text-xs text-zinc-400 mt-0.5">Click any bit inside the <span class="text-amber-300 font-medium">Noisy Channel</span> below to manually flip <code class="text-zinc-200">0↔1</code> and test detection limits!</p>
+          </div>
+          <!-- Legend -->
+          <div class="flex flex-wrap items-center gap-3 text-[11px] font-mono">
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-emerald-500/80 inline-block"></span> Data Bit</span>
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-violet-500/80 inline-block"></span> Redundant Bit</span>
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-rose-500 inline-block"></span> Corrupted Bit</span>
+          </div>
+        </div>
+
+        <!-- 3-Stage Pipeline Visualization -->
+        <div class="grid grid-cols-1 gap-3 relative">
+
+          <!-- STAGE 1: SENDER -->
+          <div id="cardSender" class="rounded-xl bg-obsidian-950/90 border border-zinc-800 p-3.5 transition-all duration-300">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-mono text-[11px] font-semibold">TX • SENDER</span>
+                <span class="text-xs text-zinc-400">Dataword + Redundancy Generator</span>
+              </div>
+              <span id="senderSummaryBadge" class="text-[11px] font-mono text-zinc-400">Codeword: 8 bits</span>
+            </div>
+            <div id="senderBitsContainer" class="flex flex-wrap items-center gap-1.5 min-h-[44px]">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Animated Connector + Noise Interference Graphic -->
+          <div class="relative flex items-center justify-center py-1">
+            <svg class="w-full h-10" viewBox="0 0 600 40" preserveAspectRatio="none">
+              <line x1="0" y1="20" x2="600" y2="20" stroke="#27273a" stroke-width="2" />
+              <path id="signalWavePath" d="M0,20 Q30,5 60,20 T120,20 T180,20 T240,20 T300,20 T360,20 T420,20 T480,20 T540,20 T600,20"
+                fill="none" stroke="#8b5cf6" stroke-width="2.2" class="animate-flow" />
+            </svg>
+            <div id="channelNoiseBanner" class="absolute px-3 py-1 rounded-full bg-obsidian-900 border border-amber-500/40 text-amber-300 text-[11px] font-mono flex items-center gap-1.5 shadow-lg">
+              <span>⚡ Noisy Channel Medium (AWGN / Impulse Interference)</span>
+            </div>
+          </div>
+
+          <!-- STAGE 2: NOISY CHANNEL (Interactive Bit Flipper) -->
+          <div id="cardChannel" class="rounded-xl bg-gradient-to-b from-[#17131d] to-obsidian-950 border border-amber-500/30 p-3.5 transition-all duration-300">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30 font-mono text-[11px] font-semibold">CHANNEL • IN TRANSIT</span>
+                <span id="errorClassificationTag" class="text-xs font-semibold text-rose-400">Single-Bit Error Active</span>
+              </div>
+              <span id="burstSpanBadge" class="text-[11px] font-mono text-zinc-400">Hamming Distance d = 1</span>
+            </div>
+
+            <!-- Interactive Bits in Channel -->
+            <div id="channelBitsContainer" class="flex flex-wrap items-center gap-1.5 min-h-[48px]">
+              <!-- Rendered dynamically; clickable -->
+            </div>
+
+            <!-- Burst Length Visual Bracket Indicator -->
+            <div id="burstIndicatorBar" class="mt-2 hidden">
+              <div class="flex items-center gap-2 text-[11px] font-mono text-rose-300 bg-rose-500/10 border border-rose-500/25 rounded-lg px-2.5 py-1">
+                <span>📏 Burst Error Length:</span>
+                <strong id="burstLengthText" class="text-white">3 bits</strong>
+                <span class="text-zinc-400">(Measured from first corrupted bit to last corrupted bit, inclusive)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- STAGE 3: RECEIVER -->
+          <div id="cardReceiver" class="rounded-xl bg-obsidian-950/90 border border-zinc-800 p-3.5 transition-all duration-300">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 font-mono text-[11px] font-semibold">RX • RECEIVER</span>
+                <span class="text-xs text-zinc-400">Syndrome Check & Decision Logic</span>
+              </div>
+              <div id="receiverDecisionBadge" class="px-2.5 py-0.5 rounded-md font-mono text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40">
+                NAK • ERROR DETECTED
+              </div>
+            </div>
+            <div id="receiverBitsContainer" class="flex flex-wrap items-center gap-1.5 min-h-[44px]">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Live Step-by-Step Mathematical Calculation Panel -->
+      <section class="glass-panel rounded-2xl p-4 sm:p-5 flex-1 flex flex-col gap-3">
+        <div class="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+          <div class="flex items-center gap-2">
+            <span class="w-7 h-7 rounded-lg bg-violet-500/15 border border-violet-500/30 text-violet-400 flex items-center justify-center font-mono text-xs font-bold">∑</span>
+            <div>
+              <h3 class="text-sm font-bold text-white">Live Mathematical Breakdown</h3>
+              <p class="text-[11px] text-zinc-400">Real-time binary arithmetic computed directly from your input</p>
+            </div>
+          </div>
+          <span id="mathFormulaBadge" class="font-mono text-xs px-2.5 py-1 rounded-lg bg-zinc-900 border border-zinc-700 text-cyan-300">
+            Even Parity: ∑(bits) mod 2 == 0
+          </span>
+        </div>
+
+        <div id="liveMathContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3 font-mono text-xs">
+          <!-- Populated dynamically with live Encoding Math & Verification Math -->
+        </div>
+      </section>
+
+    </div>
+
+    <!-- RIGHT STAGE (5 cols on lg): Synchronized Live Python Code & Variable State Inspector -->
+    <div class="lg:col-span-5 flex flex-col gap-4">
+
+      <!-- Live Python Execution Trace -->
+      <section class="glass-panel rounded-2xl overflow-hidden flex flex-col border border-zinc-800">
+        <!-- Window Title Bar -->
+        <div class="bg-[#14141b] px-4 py-2.5 border-b border-zinc-800 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="flex gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-rose-500/80"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-500/80"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></span>
+            </div>
+            <span class="font-mono text-xs text-zinc-300 ml-2 font-semibold" id="pythonFileName">error_control_parity.py</span>
+          </div>
+          <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+            Python 3.12 • Live Trace
+          </span>
+        </div>
+
+        <!-- Highlighted Python Code Lines -->
+        <div id="pythonCodeContainer" class="p-3 bg-[#0b0b0f] font-mono text-[12px] leading-relaxed overflow-x-auto select-text">
+          <!-- Rendered dynamically with active line highlight -->
+        </div>
+
+        <!-- Live Variable Watch Inspector (AlgoVision State Box) -->
+        <div class="border-t border-zinc-800 bg-[#111117] p-3.5">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-violet-400 flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>
+              Live Runtime Variables & Memory State
+            </span>
+            <span id="execLineBadge" class="text-[11px] font-mono text-zinc-400">Line 1</span>
+          </div>
+          <div id="liveVariablesGrid" class="grid grid-cols-2 gap-2 font-mono text-xs">
+            <!-- Dynamically updated runtime variables -->
+          </div>
+        </div>
+
+        <!-- Console Output Log -->
+        <div class="border-t border-zinc-800 bg-[#08080b] p-3 font-mono text-xs">
+          <div class="text-[10px] uppercase tracking-wider text-zinc-500 mb-1">STDOUT • Receiver Console</div>
+          <div id="pythonConsoleOutput" class="text-emerald-400 leading-relaxed">
+            >>> Waiting for execution...
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- Interactive Terminology & Core Concepts Explorer -->
+  <section class="max-w-[1600px] w-full mx-auto px-4 pb-8">
+    <div class="glass-panel rounded-2xl p-4 sm:p-5">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-4 border-b border-zinc-800 pb-3">
+        <div>
+          <h2 class="text-base font-bold text-white">Interactive Networking Terminology & Concept Explorer</h2>
+          <p class="text-xs text-zinc-400">Click any concept card to inspect its definition and live telemetry from your current simulation</p>
+        </div>
+        <div class="flex gap-1.5 flex-wrap" id="conceptFilterTabs">
+          <button data-cat="all" class="cat-tab px-3 py-1 rounded-lg text-xs font-medium bg-violet-600 text-white">All Concepts</button>
+          <button data-cat="need" class="cat-tab px-3 py-1 rounded-lg text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700">Need & Channel</button>
+          <button data-cat="errors" class="cat-tab px-3 py-1 rounded-lg text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700">Types of Errors</button>
+          <button data-cat="terms" class="cat-tab px-3 py-1 rounded-lg text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700">Key Terminology</button>
+        </div>
+      </div>
+
+      <!-- Cards Grid -->
+      <div id="terminologyGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+  </section>
+
+  <script>
+    /**
+     * AlgoVision — Error Control, Error Types, Noisy Channel & Terminology
+     * Pure Vanilla JS state-driven engine with zero external dependencies beyond Tailwind & Google Fonts.
+     */
+
+    // =========================================================================
+    // 1. APPLICATION STATE
+    // =========================================================================
+    const state = {
+      rawInput: '1011001',
+      binaryData: '1011001',
+      inputMode: '7-bit BIN',
+      method: 'parity_even',     // parity_even | parity_odd | crc | checksum
+      errorType: 'single',       // single | burst | double | none
+      step: 0,                   // 0: Input, 1: Encoding, 2: Channel/Noise, 3: Receiver Check, 4: ACK/NAK
+      isPlaying: false,
+      speedMs: 1100,
+      timerId: null,
+      // Encoded & Channel bit arrays
+      dataBits: [],
+      redundantBits: [],
+      transmittedBits: [],       // Array of { bit: '0'|'1', isRedundant: bool }
+      noiseMask: [],             // Boolean array indicating which indices flipped
+      receivedBits: [],          // Array of { bit: '0'|'1', isRedundant: bool, flipped: bool }
+      // Computed Math & Verification metadata
+      mathDetails: {},
+      detectionResult: {
+        errorOccurred: false,
+        errorDetected: false,
+        syndrome: '0',
+        statusText: 'ACK (No Error)',
+        verdictType: 'valid' // valid | detected | undetected_trap
+      },
+      selectedConceptCat: 'all',
+      highlightedTermId: null
+    };
+
+    const STEPS_META = [
+      { id: 0, label: '1. Dataword Ready', short: 'Input' },
+      { id: 1, label: '2. Redundancy Encoding', short: 'Encode' },
+      { id: 2, label: '3. Noisy Channel Transit', short: 'Channel' },
+      { id: 3, label: '4. Receiver Verification', short: 'Verify' },
+      { id: 4, label: '5. ACK / NAK Feedback', short: 'Decision' }
+    ];
+
+    const CRC_GENERATOR = '1101'; // x^3 + x^2 + 1 (CRC-3)
+
+    // =========================================================================
+    // 2. INPUT PARSER (Supports both Binary strings & Decimal integers!)
+    // =========================================================================
+    function parseUserInput(raw) {
+      const cleaned = raw.trim();
+      if (!cleaned) {
+        return { bin: '1011001', badge: 'Default BIN' };
+      }
+      // If strictly 0s and 1s (and length >= 2), treat as binary string
+      if (/^[01]+$/.test(cleaned)) {
+        const sliced = cleaned.slice(0, 12);
+        return { bin: sliced, badge: `${sliced.length}-bit BIN` };
+      }
+      // If numeric digits (e.g., 75, 255), convert decimal to binary!
+      if (/^\d+$/.test(cleaned)) {
+        const num = Math.min(parseInt(cleaned, 10), 4095);
+        const bin = num.toString(2).padStart(4, '0');
+        return { bin, badge: `Dec ${num} → ${bin.length}b` };
+      }
+      // Fallback: filter valid binary chars or convert ASCII first 2 chars
+      const onlyBin = cleaned.replace(/[^01]/g, '');
+      if (onlyBin.length > 0) {
+        return { bin: onlyBin.slice(0, 12), badge: `${onlyBin.slice(0, 12).length}-bit BIN` };
+      }
+      const asciiBin = cleaned.charCodeAt(0).toString(2).padStart(8, '0');
+      return { bin: asciiBin, badge: `'${cleaned[0]}' → 8b` };
+    }
+
+    // =========================================================================
+    // 3. ERROR CONTROL ALGORITHMS (Encoding + Verification)
+    // =========================================================================
+    function xorStrings(a, b) {
+      let res = '';
+      for (let i = 1; i < b.length; i++) {
+        res += a[i] === b[i] ? '0' : '1';
+      }
+      return res;
+    }
+
+    function computeCRC(bitString, generator) {
+      const pick = generator.length;
+      let tmp = bitString.slice(0, pick);
+      const steps = [];
+
+      for (let i = pick; i <= bitString.length; i++) {
+        const quotientBit = tmp[0];
+        const divisor = quotientBit === '1' ? generator : '0'.repeat(pick);
+        const rem = xorStrings(tmp, divisor);
+        steps.push({
+          window: tmp,
+          divisor,
+          quotientBit,
+          remainder: rem
+        });
+        if (i < bitString.length) {
+          tmp = rem + bitString[i];
+        } else {
+          tmp = rem;
+        }
+      }
+      return { remainder: tmp, steps };
+    }
+
+    function computeChecksum(dataStr) {
+      // Pad dataStr to multiple of 4 bits
+      const padLen = (4 - (dataStr.length % 4)) % 4;
+      const padded = '0'.repeat(padLen) + dataStr;
+      const blocks = [];
+      for (let i = 0; i < padded.length; i += 4) {
+        blocks.push(padded.slice(i, i + 4));
+      }
+      let sum = 0;
+      blocks.forEach(b => { sum += parseInt(b, 2); });
+      // Wrap-around carry in 4-bit arithmetic
+      let wrapped = sum;
+      while (wrapped > 15) {
+        wrapped = (wrapped & 15) + (wrapped >> 4);
+      }
+      const sumBin = wrapped.toString(2).padStart(4, '0');
+      // 1's complement
+      const checksum = sumBin.split('').map(b => b === '0' ? '1' : '0').join('');
+      return { padded, blocks, rawSum: sum, wrappedBin: sumBin, checksum };
+    }
+
+    function encodeDataword(dataBin, method) {
+      const dataArr = dataBin.split('');
+      if (method === 'parity_even' || method === 'parity_odd') {
+        const ones = dataArr.filter(b => b === '1').length;
+        const isEven = ones % 2 === 0;
+        const parityBit = method === 'parity_even'
+          ? (isEven ? '0' : '1')
+          : (isEven ? '1' : '0');
+        return {
+          effectiveData: dataArr,
+          redundant: [parityBit],
+          math: {
+            type: method,
+            onesCount: ones,
+            parityBit,
+            formula: method === 'parity_even'
+              ? `Count(1s) = ${ones} (${isEven ? 'Even' : 'Odd'}) → Parity Bit = ${parityBit}`
+              : `Count(1s) = ${ones} (${isEven ? 'Even' : 'Odd'}) → Odd Parity Bit = ${parityBit}`
+          }
+        };
+      }
+
+      if (method === 'crc') {
+        const appended = dataBin + '0'.repeat(CRC_GENERATOR.length - 1);
+        const { remainder, steps } = computeCRC(appended, CRC_GENERATOR);
+        return {
+          effectiveData: dataArr,
+          redundant: remainder.split(''),
+          math: {
+            type: 'crc',
+            generator: CRC_GENERATOR,
+            appended,
+            remainder,
+            steps
+          }
+        };
+      }
+
+      if (method === 'checksum') {
+        const cs = computeChecksum(dataBin);
+        return {
+          effectiveData: cs.padded.split(''),
+          redundant: cs.checksum.split(''),
+          math: {
+            type: 'checksum',
+            ...cs
+          }
+        };
+      }
+    }
+
+    // =========================================================================
+    // 4. NOISE INJECTION ENGINE
+    // =========================================================================
+    function generateNoiseMask(totalLength, errorType) {
+      const mask = new Array(totalLength).fill(false);
+      if (errorType === 'none' || totalLength === 0) return mask;
+
+      if (errorType === 'single') {
+        // Flip 1 bit near middle for clear visibility
+        const idx = Math.floor(totalLength / 2);
+        mask[idx] = true;
+      } else if (errorType === 'double') {
+        // Flip 2 bits (demonstrates even-bit parity blind spot!)
+        const idx1 = Math.max(0, Math.floor(totalLength / 2) - 1);
+        const idx2 = Math.min(totalLength - 1, idx1 + 2);
+        mask[idx1] = true;
+        if (idx2 !== idx1) mask[idx2] = true;
+      } else if (errorType === 'burst') {
+        // Corrupt a contiguous burst span of length 3 (or 4 if long enough)
+        const burstLen = Math.min(totalLength, totalLength >= 8 ? 4 : 3);
+        const start = Math.max(0, Math.floor((totalLength - burstLen) / 2));
+        for (let i = start; i < start + burstLen; i++) {
+          // In a burst of length L, first and last bits flip, intermediate bits may flip
+          if (i === start || i === start + burstLen - 1 || i % 2 === 0) {
+            mask[i] = true;
+          }
+        }
+      }
+      return mask;
+    }
+
+    function injectRandomNoise() {
+      const len = state.transmittedBits.length;
+      if (len === 0) return;
+      const mask = new Array(len).fill(false);
+      if (state.errorType === 'none') {
+        state.errorType = 'single';
+        document.getElementById('errorTypeSelect').value = 'single';
+      }
+      if (state.errorType === 'single') {
+        const r = Math.floor(Math.random() * len);
+        mask[r] = true;
+      } else if (state.errorType === 'double') {
+        const r1 = Math.floor(Math.random() * len);
+        let r2 = (r1 + 1 + Math.floor(Math.random() * (len - 1))) % len;
+        mask[r1] = true;
+        mask[r2] = true;
+      } else if (state.errorType === 'burst') {
+        const bLen = Math.min(len, 3 + Math.floor(Math.random() * 2));
+        const start = Math.floor(Math.random() * (len - bLen + 1));
+        for (let i = start; i < start + bLen; i++) {
+          if (i === start || i === start + bLen - 1 || Math.random() > 0.35) {
+            mask[i] = true;
+          }
+        }
+      }
+      state.noiseMask = mask;
+      if (state.step < 2) state.step = 2;
+      recomputeReceiverAndRender();
+    }
+
+    // =========================================================================
+    // 5. RECEIVER VERIFICATION ENGINE
+    // =========================================================================
+    function verifyReceivedCodeword(receivedArr, method) {
+      const rxStr = receivedArr.map(x => x.bit).join('');
+      const flippedCount = receivedArr.filter(x => x.flipped).length;
+      const errorOccurred = flippedCount > 0;
+
+      if (method === 'parity_even' || method === 'parity_odd') {
+        const ones = receivedArr.filter(x => x.bit === '1').length;
+        const isEven = ones % 2 === 0;
+        const valid = method === 'parity_even' ? isEven : !isEven;
+        const syndrome = valid ? '0 (Valid)' : '1 (Parity Mismatch)';
+        return buildVerdict(errorOccurred, !valid, syndrome, {
+          rxOnes: ones,
+          expectedEven: method === 'parity_even',
+          valid
+        });
+      }
+
+      if (method === 'crc') {
+        const { remainder, steps } = computeCRC(rxStr, CRC_GENERATOR);
+        const valid = /^0+$/.test(remainder);
+        return buildVerdict(errorOccurred, !valid, remainder, {
+          rxStr,
+          remainder,
+          steps,
+          valid
+        });
+      }
+
+      if (method === 'checksum') {
+        // Add all 4-bit blocks including checksum
+        const blocks = [];
+        for (let i = 0; i < rxStr.length; i += 4) {
+          blocks.push(rxStr.slice(i, i + 4));
+        }
+        let sum = 0;
+        blocks.forEach(b => { sum += parseInt(b, 2); });
+        while (sum > 15) {
+          sum = (sum & 15) + (sum >> 4);
+        }
+        const sumBin = sum.toString(2).padStart(4, '0');
+        const complement = sumBin.split('').map(b => b === '0' ? '1' : '0').join('');
+        const valid = complement === '0000';
+        return buildVerdict(errorOccurred, !valid, complement, {
+          blocks,
+          sumBin,
+          complement,
+          valid
+        });
+      }
+    }
+
+    function buildVerdict(errorOccurred, errorDetected, syndrome, rxMath) {
+      let statusText = '';
+      let verdictType = 'valid';
+      if (!errorOccurred && !errorDetected) {
+        statusText = 'ACK • CLEAN SIGNAL ACCEPTED';
+        verdictType = 'valid';
+      } else if (errorOccurred && errorDetected) {
+        statusText = 'NAK • ERROR DETECTED (RETRANSMIT)';
+        verdictType = 'detected';
+      } else if (errorOccurred && !errorDetected) {
+        statusText = '⚠️ UNDETECTED ERROR (COLLISION!)';
+        verdictType = 'undetected_trap';
+      } else {
+        statusText = 'NAK • SYNDROME NON-ZERO';
+        verdictType = 'detected';
+      }
+      return {
+        errorOccurred,
+        errorDetected,
+        syndrome,
+        statusText,
+        verdictType,
+        rxMath
+      };
+    }
+
+    // =========================================================================
+    // 6. FULL PIPELINE RECOMPUTATION
+    // =========================================================================
+    function fullRecalculate(resetNoise = true) {
+      const parsed = parseUserInput(state.rawInput);
+      state.binaryData = parsed.bin;
+      state.inputMode = parsed.badge;
+      document.getElementById('inputConversionBadge').textContent = parsed.badge;
+
+      const encoded = encodeDataword(state.binaryData, state.method);
+      state.dataBits = encoded.effectiveData;
+      state.redundantBits = encoded.redundant;
+      state.mathDetails = encoded.math;
+
+      state.transmittedBits = [
+        ...state.dataBits.map(b => ({ bit: b, isRedundant: false })),
+        ...state.redundantBits.map(b => ({ bit: b, isRedundant: true }))
+      ];
+
+      if (resetNoise || state.noiseMask.length !== state.transmittedBits.length) {
+        state.noiseMask = generateNoiseMask(state.transmittedBits.length, state.errorType);
+      }
+
+      recomputeReceiverAndRender();
+    }
+
+    function recomputeReceiverAndRender() {
+      state.receivedBits = state.transmittedBits.map((item, idx) => {
+        const flipped = !!state.noiseMask[idx];
+        const rxBit = flipped ? (item.bit === '0' ? '1' : '0') : item.bit;
+        return {
+          bit: rxBit,
+          originalBit: item.bit,
+          isRedundant: item.isRedundant,
+          flipped
+        };
+      });
+
+      state.detectionResult = verifyReceivedCodeword(state.receivedBits, state.method);
+      renderAll();
+    }
+
+    // =========================================================================
+    // 7. RENDERING UI COMPONENTS
+    // =========================================================================
+    function renderAll() {
+      renderStepper();
+      renderPipeline();
+      renderLiveMath();
+      renderPythonPanel();
+      renderTerminologyCards();
+    }
+
+    function renderStepper() {
+      const container = document.getElementById('stepStepper');
+      container.innerHTML = STEPS_META.map((s, idx) => {
+        const active = state.step === idx;
+        const completed = state.step > idx;
+        const baseCls = active
+          ? 'bg-violet-600 text-white border-violet-400 shadow-md shadow-violet-600/25'
+          : completed
+            ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+            : 'bg-zinc-900 text-zinc-400 border-zinc-800 hover:border-zinc-700';
+        return `
+          <button onclick="setStep(${idx})" class="px-2.5 py-1 rounded-lg border text-xs font-mono transition flex items-center gap-1.5 ${baseCls}">
+            <span>${completed ? '✓' : idx + 1}</span>
+            <span class="hidden sm:inline">${s.short}</span>
+          </button>
+          ${idx < STEPS_META.length - 1 ? '<span class="text-zinc-700 text-xs">→</span>' : ''}
+        `;
+      }).join('');
+
+      document.getElementById('liveStatusPill').textContent = STEPS_META[state.step].label;
+    }
+
+    function renderBitBox(bitObj, index, mode) {
+      // mode: 'sender' | 'channel' | 'receiver'
+      const isFlipped = bitObj.flipped && state.step >= 2;
+      const isRedundant = bitObj.isRedundant;
+
+      let bgClass = isRedundant
+        ? 'bg-violet-500/15 border-violet-500/40 text-violet-200'
+        : 'bg-emerald-500/15 border-emerald-500/40 text-emerald-200';
+
+      if (mode === 'sender' && state.step < 1 && isRedundant) {
+        bgClass = 'bg-zinc-900/60 border-dashed border-zinc-700 text-zinc-500';
+      }
+
+      if (isFlipped && (mode === 'channel' || mode === 'receiver')) {
+        bgClass = 'bg-rose-500/25 border-rose-500 text-rose-100 bit-error-pulse';
+      }
+
+      const clickableAttr = mode === 'channel'
+        ? `onclick="toggleChannelBit(${index})" title="Click to flip bit #${index} (0↔1)"`
+        : '';
+      const cursorCls = mode === 'channel' ? 'cursor-pointer hover:scale-105 active:scale-95' : '';
+
+      const displayVal = (mode === 'sender' && state.step < 1 && isRedundant) ? '?' : bitObj.bit;
+      const tagLabel = isRedundant ? 'CHK' : `D${index}`;
+
+      return `
+        <div ${clickableAttr} class="select-none transition-all duration-200 rounded-xl border px-2.5 py-1.5 min-w-[42px] flex flex-col items-center justify-center ${bgClass} ${cursorCls}">
+          <span class="text-[9px] font-mono uppercase tracking-wider opacity-70">${isFlipped && mode !== 'sender' ? 'ERR!' : tagLabel}</span>
+          <span class="font-mono text-base font-bold leading-tight">${displayVal}</span>
+          ${isFlipped && mode !== 'sender'
+            ? `<span class="text-[9px] font-mono text-rose-300 line-through">${bitObj.originalBit}</span>`
+            : `<span class="text-[9px] font-mono opacity-40">b${index}</span>`}
+        </div>
+      `;
+    }
+
+    function renderPipeline() {
+      // Highlight active stage card
+      const cardSender = document.getElementById('cardSender');
+      const cardChannel = document.getElementById('cardChannel');
+      const cardReceiver = document.getElementById('cardReceiver');
+
+      cardSender.classList.toggle('ring-2', state.step <= 1);
+      cardSender.classList.toggle('ring-emerald-500/50', state.step <= 1);
+
+      cardChannel.classList.toggle('ring-2', state.step === 2);
+      cardChannel.classList.toggle('ring-amber-500/60', state.step === 2);
+
+      cardReceiver.classList.toggle('ring-2', state.step >= 3);
+      cardReceiver.classList.toggle('ring-cyan-500/60', state.step >= 3);
+
+      // Render Sender Bits
+      document.getElementById('senderBitsContainer').innerHTML =
+        state.transmittedBits.map((b, i) => renderBitBox(b, i, 'sender')).join('');
+      document.getElementById('senderSummaryBadge').textContent =
+        `Data: ${state.dataBits.length}b + Redundant: ${state.redundantBits.length}b = ${state.transmittedBits.length}b`;
+
+      // Render Channel Bits
+      document.getElementById('channelBitsContainer').innerHTML =
+        state.receivedBits.map((b, i) => renderBitBox(b, i, 'channel')).join('');
+
+      // Analyze actual flipped bits for Hamming Distance & Burst Span
+      const flippedIndices = state.receivedBits
+        .map((b, i) => (b.flipped ? i : -1))
+        .filter(i => i !== -1);
+
+      const errTag = document.getElementById('errorClassificationTag');
+      const burstBar = document.getElementById('burstIndicatorBar');
+      const wavePath = document.getElementById('signalWavePath');
+
+      if (flippedIndices.length === 0) {
+        errTag.textContent = 'Clean Channel (0 Bit Errors)';
+        errTag.className = 'text-xs font-semibold text-emerald-400';
+        burstBar.classList.add('hidden');
+        wavePath.setAttribute('stroke', '#10b981');
+      } else if (flippedIndices.length === 1) {
+        errTag.textContent = `Single-Bit Error (Index b${flippedIndices[0]})`;
+        errTag.className = 'text-xs font-semibold text-rose-400';
+        burstBar.classList.add('hidden');
+        wavePath.setAttribute('stroke', '#f43f5e');
+      } else {
+        const first = flippedIndices[0];
+        const last = flippedIndices[flippedIndices.length - 1];
+        const burstLen = last - first + 1;
+        errTag.textContent = `Burst / Multi-Bit Error (${flippedIndices.length} bits flipped)`;
+        errTag.className = 'text-xs font-semibold text-rose-400';
+        burstBar.classList.remove('hidden');
+        document.getElementById('burstLengthText').textContent = `${burstLen} bits (b${first} → b${last})`;
+        wavePath.setAttribute('stroke', '#f43f5e');
+      }
+
+      document.getElementById('burstSpanBadge').textContent =
+        `Hamming Distance d(TX, RX) = ${flippedIndices.length}`;
+
+      // Render Receiver Bits
+      document.getElementById('receiverBitsContainer').innerHTML =
+        state.receivedBits.map((b, i) => renderBitBox(b, i, 'receiver')).join('');
+
+      // Receiver Decision Badge
+      const decBadge = document.getElementById('receiverDecisionBadge');
+      if (state.step < 3) {
+        decBadge.textContent = 'WAITING FOR SIGNAL...';
+        decBadge.className = 'px-2.5 py-0.5 rounded-md font-mono text-xs font-bold bg-zinc-800 text-zinc-400 border border-zinc-700';
+      } else {
+        const v = state.detectionResult.verdictType;
+        decBadge.textContent = state.detectionResult.statusText;
+        if (v === 'valid') {
+          decBadge.className = 'px-2.5 py-0.5 rounded-md font-mono text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
+        } else if (v === 'detected') {
+          decBadge.className = 'px-2.5 py-0.5 rounded-md font-mono text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40';
+        } else {
+          decBadge.className = 'px-2.5 py-0.5 rounded-md font-mono text-xs font-bold bg-amber-500/25 text-amber-300 border border-amber-500/50';
+        }
+      }
+    }
+
+    function renderLiveMath() {
+      const container = document.getElementById('liveMathContainer');
+      const formulaBadge = document.getElementById('mathFormulaBadge');
+      const m = state.mathDetails;
+      const rx = state.detectionResult.rxMath;
+
+      if (state.method === 'parity_even' || state.method === 'parity_odd') {
+        const modeName = state.method === 'parity_even' ? 'Even Parity' : 'Odd Parity';
+        formulaBadge.textContent = `${modeName}: Total 1s must be ${state.method === 'parity_even' ? 'EVEN' : 'ODD'}`;
+        container.innerHTML = `
+          <div class="rounded-xl bg-obsidian-950 border border-zinc-800 p-3 space-y-1.5">
+            <div class="text-violet-400 font-bold uppercase text-[11px]">1. Sender Encoding Math</div>
+            <div class="text-zinc-300">Dataword: <span class="text-emerald-400">${state.dataBits.join('')}</span></div>
+            <div class="text-zinc-300">Number of 1s: <span class="text-white font-bold">${m.onesCount}</span> (${m.onesCount % 2 === 0 ? 'Even' : 'Odd'})</div>
+            <div class="text-zinc-300">Generated Parity Bit: <span class="text-violet-300 font-bold">${m.parityBit}</span></div>
+            <div class="pt-1 border-t border-zinc-800/80 text-emerald-300">Transmitted = ${state.transmittedBits.map(x => x.bit).join('')}</div>
+          </div>
+          <div class="rounded-xl bg-obsidian-950 border border-zinc-800 p-3 space-y-1.5">
+            <div class="text-cyan-400 font-bold uppercase text-[11px]">2. Receiver Syndrome Check</div>
+            <div class="text-zinc-300">Received Frame: <span class="text-amber-300">${state.receivedBits.map(x => x.bit).join('')}</span></div>
+            <div class="text-zinc-300">Count of 1s at RX: <span class="text-white font-bold">${rx.rxOnes}</span> (${rx.rxOnes % 2 === 0 ? 'Even' : 'Odd'})</div>
+            <div class="text-zinc-300">Syndrome Bit: <span class="${rx.valid ? 'text-emerald-400' : 'text-rose-400'} font-bold">${state.detectionResult.syndrome}</span></div>
+            <div class="pt-1 border-t border-zinc-800/80 text-zinc-400 text-[11px]">
+              ${state.detectionResult.verdictType === 'undetected_trap'
+                ? '⚠️ Note: Even number of bit flips preserved parity! Demonstrates limitation of Simple Parity.'
+                : 'Simple Parity detects any ODD number of bit errors.'}
+            </div>
+          </div>
+        `;
+      } else if (state.method === 'crc') {
+        formulaBadge.textContent = `CRC-3 Generator G(x) = ${CRC_GENERATOR} (x³ + x² + 1)`;
+        const stepsPreview = m.steps.slice(0, 4).map((st, idx) =>
+          `<div class="text-[11px] text-zinc-400">Step ${idx + 1}: <span class="text-zinc-200">${st.window}</span> ⊕ <span class="text-violet-400">${st.divisor}</span> → <span class="text-cyan-300">${st.remainder}</span></div>`
+        ).join('');
+
+        container.innerHTML = `
+          <div class="rounded-xl bg-obsidian-950 border border-zinc-800 p-3 space-y-1.5">
+            <div class="text-violet-400 font-bold uppercase text-[11px]">1. Modulo-2 Binary Division (TX)</div>
+            <div class="text-zinc-300">Dividend (Data + 000): <span class="text-emerald-400">${m.appended}</span></div>
+            <div class="space-y-0.5 bg-zinc-900/70 p-2 rounded-lg">${stepsPreview}</div>
+            <div class="pt-1 border-t border-zinc-800/80 text-violet-300 font-bold">CRC Remainder = ${m.remainder}</div>
+          </div>
+          <div class="rounded-xl bg-obsidian-950 border border-zinc-800 p-3 space-y-1.5">
+            <div class="text-cyan-400 font-bold uppercase text-[11px]">2. Receiver Polynomial Division (RX)</div>
+            <div class="text-zinc-300">Received Codeword: <span class="text-amber-300">${rx.rxStr}</span></div>
+            <div class="text-zinc-300">Divisor G(x): <span class="text-violet-400">${CRC_GENERATOR}</span></div>
+            <div class="text-zinc-300">RX Remainder (Syndrome): <span class="${rx.valid ? 'text-emerald-400' : 'text-rose-400'} font-bold">${rx.remainder}</span></div>
+            <div class="pt-1 border-t border-zinc-800/80 text-zinc-400 text-[11px]">
+              ${rx.valid ? 'Remainder == 000 → Frame accepted!' : 'Remainder ≠ 000 → Burst/Bit error caught by CRC!'}
+            </div>
+          </div>
+        `;
+      } else if (state.method === 'checksum') {
+        formulaBadge.textContent = `4-Bit Block Sum + 1's Complement`;
+        container.innerHTML = `
+          <div class="rounded-xl bg-obsidian-950 border border-zinc-800 p-3 space-y-1.5">
+            <div class="text-violet-400 font-bold uppercase text-[11px]">1. Sender Checksum Generator</div>
+            <div class="text-zinc-300">4-bit Blocks: <span class="text-emerald-400">[${m.blocks.join(', ')}]</span></div>
+            <div class="text-zinc-300">Wrapped Sum: <span class="text-white">${m.wrappedBin}</span> (Dec ${parseInt(m.wrappedBin, 2)})</div>
+            <div class="text-zinc-300">1's Complement (Checksum): <span class="text-violet-300 font-bold">${m.checksum}</span></div>
+            <div class="pt-1 border-t border-zinc-800/80 text-emerald-300">TX Frame = ${state.transmittedBits.map(x => x.bit).join('')}</div>
+          </div>
+          <div class="rounded-xl bg-obsidian-950 border border-zinc-800 p-3 space-y-1.5">
+            <div class="text-cyan-400 font-bold uppercase text-[11px]">2. Receiver Sum + Complement</div>
+            <div class="text-zinc-300">RX Blocks: <span class="text-amber-300">[${rx.blocks.join(', ')}]</span></div>
+            <div class="text-zinc-300">Wrapped Sum at RX: <span class="text-white">${rx.sumBin}</span></div>
+            <div class="text-zinc-300">1's Complement Result: <span class="${rx.valid ? 'text-emerald-400' : 'text-rose-400'} font-bold">${rx.complement}</span></div>
+            <div class="pt-1 border-t border-zinc-800/80 text-zinc-400 text-[11px]">
+              ${rx.valid ? 'Result == 0000 → Integrity verified.' : 'Result ≠ 0000 → Checksum mismatch!'}
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    // =========================================================================
+    // 8. LIVE SYNCHRONIZED PYTHON CODE & RUNTIME STATE
+    // =========================================================================
+    function getPythonScriptAndHighlight() {
+      const txStr = state.transmittedBits.map(x => x.bit).join('');
+      const rxStr = state.receivedBits.map(x => x.bit).join('');
+      const redStr = state.redundantBits.join('');
+
+      if (state.method === 'parity_even' || state.method === 'parity_odd') {
+        const mode = state.method === 'parity_even' ? 'EVEN' : 'ODD';
+        const lines = [
+          `def parity_control(data: str, mode="${mode}"):`,
+          `    ones = data.count('1')`,
+          `    parity = str(ones % 2) if mode == "EVEN" else str((ones + 1) % 2)`,
+          `    codeword = data + parity  # Append redundant check bit`,
+          `    received = noisy_channel(codeword, error="${state.errorType}")`,
+          `    rx_ones = received.count('1')`,
+          `    syndrome = rx_ones % 2 if mode == "EVEN" else (rx_ones + 1) % 2`,
+          `    return "ACK" if syndrome == 0 else "NAK: Error Detected"`
+        ];
+        const activeLineMap = [1, 3, 4, 6, 7];
+        return {
+          fileName: 'parity_check_live.py',
+          lines,
+          activeLine: activeLineMap[state.step],
+          vars: {
+            data: `"${state.dataBits.join('')}"`,
+            parity_bit: `"${redStr}"`,
+            codeword: `"${txStr}"`,
+            received: `"${rxStr}"`,
+            syndrome: `"${state.detectionResult.syndrome}"`,
+            decision: `"${state.detectionResult.verdictType === 'valid' ? 'ACK' : 'NAK'}"`
+          }
+        };
+      }
+
+      if (state.method === 'crc') {
+        const lines = [
+          `def crc_check(data: str, gen="${CRC_GENERATOR}"):`,
+          `    padded = data + '0' * (len(gen) - 1)`,
+          `    crc = mod2_div(padded, gen)  # Sender remainder`,
+          `    codeword = data + crc`,
+          `    received = noisy_channel(codeword, error="${state.errorType}")`,
+          `    syndrome = mod2_div(received, gen)  # Receiver check`,
+          `    if int(syndrome, 2) == 0:`,
+          `        return "ACK: Frame Accepted"`,
+          `    return f"NAK: Burst/Bit Error (rem={syndrome})"`
+        ];
+        const activeLineMap = [1, 3, 4, 5, 7];
+        return {
+          fileName: 'crc_modulo2_live.py',
+          lines,
+          activeLine: activeLineMap[state.step],
+          vars: {
+            data: `"${state.dataBits.join('')}"`,
+            generator: `"${CRC_GENERATOR}"`,
+            crc_bits: `"${redStr}"`,
+            received: `"${rxStr}"`,
+            syndrome: `"${state.detectionResult.syndrome}"`,
+            decision: `"${state.detectionResult.verdictType === 'valid' ? 'ACK' : 'NAK'}"`
+          }
+        };
+      }
+
+      // Checksum
+      const lines = [
+        `def internet_checksum(data: str):`,
+        `    blocks = split_4bit_blocks(data)`,
+        `    checksum = ones_complement(wrap_sum(blocks))`,
+        `    codeword = "".join(blocks) + checksum`,
+        `    received = noisy_channel(codeword, error="${state.errorType}")`,
+        `    rx_check = ones_complement(wrap_sum(split_4bit_blocks(received)))`,
+        `    return "ACK" if rx_check == "0000" else f"NAK ({rx_check})"`
+      ];
+      const activeLineMap = [1, 2, 4, 5, 6];
+      return {
+        fileName: 'checksum_live.py',
+        lines,
+        activeLine: activeLineMap[state.step],
+        vars: {
+          data: `"${state.dataBits.join('')}"`,
+          checksum: `"${redStr}"`,
+          codeword: `"${txStr}"`,
+          received: `"${rxStr}"`,
+          rx_check: `"${state.detectionResult.syndrome}"`,
+          decision: `"${state.detectionResult.verdictType === 'valid' ? 'ACK' : 'NAK'}"`
+        }
+      };
+    }
+
+    function renderPythonPanel() {
+      const py = getPythonScriptAndHighlight();
+      document.getElementById('pythonFileName').textContent = py.fileName;
+      document.getElementById('execLineBadge').textContent = `Executing Line ${py.activeLine + 1}`;
+
+      const codeHtml = py.lines.map((line, idx) => {
+        const isActive = idx === py.activeLine;
+        const lineNum = String(idx + 1).padStart(2, '0');
+        // Simple syntax highlighting
+        const highlighted = line
+          .replace(/(def|if|else|return)/g, '<span class="text-violet-400 font-semibold">$1</span>')
+          .replace(/(".*?")/g, '<span class="text-emerald-400">$1</span>')
+          .replace(/(#.*$)/g, '<span class="text-zinc-500 italic">$1</span>');
+
+        return `
+          <div class="px-2.5 py-1 rounded flex items-center gap-3 transition-colors ${isActive ? 'code-line-active text-white' : 'text-zinc-400'}">
+            <span class="text-zinc-600 select-none w-5 text-right">${lineNum}</span>
+            <span class="w-3 text-violet-400 font-bold">${isActive ? '▶' : ''}</span>
+            <pre class="whitespace-pre font-mono">${highlighted}</pre>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('pythonCodeContainer').innerHTML = codeHtml;
+
+      // Render Live Variables Grid
+      const varsHtml = Object.entries(py.vars).map(([k, v]) => {
+        const isErrVar = (k === 'syndrome' || k === 'rx_check') && state.detectionResult.errorDetected;
+        return `
+          <div class="bg-obsidian-950 border border-zinc-800/90 rounded-lg px-2.5 py-1.5 flex items-center justify-between gap-2 overflow-hidden">
+            <span class="text-zinc-400 truncate">${k}:</span>
+            <span class="${isErrVar ? 'text-rose-400 font-bold' : 'text-cyan-300'} truncate">${v}</span>
+          </div>
+        `;
+      }).join('');
+      document.getElementById('liveVariablesGrid').innerHTML = varsHtml;
+
+      // Console Output
+      const outEl = document.getElementById('pythonConsoleOutput');
+      if (state.step < 3) {
+        outEl.className = 'text-zinc-400 leading-relaxed';
+        outEl.innerHTML = `>>> Transmitting ${state.transmittedBits.length}-bit frame across channel... [Step ${state.step + 1}/5]`;
+      } else {
+        const v = state.detectionResult.verdictType;
+        outEl.className = v === 'valid' ? 'text-emerald-400' : v === 'detected' ? 'text-rose-400' : 'text-amber-300';
+        outEl.innerHTML = `>>> Result: <strong>${state.detectionResult.statusText}</strong> | Syndrome = ${state.detectionResult.syndrome}`;
+      }
+    }
+
+    // =========================================================================
+    // 9. INTERACTIVE TERMINOLOGY & CONCEPT CARDS
+    // =========================================================================
+    const CONCEPTS_DATA = [
+      {
+        id: 'need_error_control',
+        cat: 'need',
+        title: 'Need for Error Control',
+        badge: 'Core Foundation',
+        desc: 'Physical channels suffer from thermal noise, attenuation, and crosstalk. Without error control, corrupted bits silently ruin files, financial packets, or control commands.',
+        liveMetric: () => `Current Frame: ${state.transmittedBits.length} bits protected by ${state.redundantBits.length} redundant bit(s).`
+      },
+      {
+        id: 'noisy_channel',
+        cat: 'need',
+        title: 'Noisy Communication Channel',
+        badge: 'Physical Medium',
+        desc: 'Any transmission medium (copper, wireless RF, fiber) where electromagnetic interference, impulse spikes, or attenuation distorts signal voltage levels.',
+        liveMetric: () => `Channel Mode: ${state.errorType.toUpperCase()} (${state.receivedBits.filter(b => b.flipped).length} bits altered in transit).`
+      },
+      {
+        id: 'single_bit',
+        cat: 'errors',
+        title: 'Single-Bit Error',
+        badge: 'Error Type I',
+        desc: 'Only ONE bit of a given data unit (byte, character, or packet) is changed from 1 to 0 or 0 to 1. Common in parallel transmission or low-level thermal noise.',
+        liveMetric: () => `Status: ${state.receivedBits.filter(b => b.flipped).length === 1 ? 'ACTIVE right now in channel!' : 'Select "Single-Bit Error" to simulate.'}`
+      },
+      {
+        id: 'burst_error',
+        cat: 'errors',
+        title: 'Burst Error',
+        badge: 'Error Type II',
+        desc: 'Two or more bits in the data unit have changed. Burst length is measured from the FIRST corrupted bit to the LAST corrupted bit (including intact bits in between).',
+        liveMetric: () => {
+          const flips = state.receivedBits.map((b, i) => b.flipped ? i : -1).filter(i => i !== -1);
+          if (flips.length < 2) return 'Currently < 2 bits flipped.';
+          return `Active Burst Span: ${flips[flips.length - 1] - flips[0] + 1} bits (Index b${flips[0]} to b${flips[flips.length - 1]}).`;
+        }
+      },
+      {
+        id: 'redundancy',
+        cat: 'terms',
+        title: 'Redundancy (Check Bits)',
+        badge: 'Terminology',
+        desc: 'Extra bits appended by the sender (Parity, CRC remainder, or Checksum) that carry no new user data but establish a mathematical relationship for verification.',
+        liveMetric: () => `Overhead Ratio: ${state.redundantBits.length}/${state.transmittedBits.length} bits (${Math.round((state.redundantBits.length / state.transmittedBits.length) * 100)}%).`
+      },
+      {
+        id: 'syndrome',
+        cat: 'terms',
+        title: 'Syndrome / Remainder',
+        badge: 'Terminology',
+        desc: 'The diagnostic value calculated at the receiver. A zero syndrome indicates an apparently valid frame; a non-zero syndrome proves an error occurred.',
+        liveMetric: () => `Current Receiver Syndrome: ${state.detectionResult.syndrome}`
+      },
+      {
+        id: 'hamming_dist',
+        cat: 'terms',
+        title: 'Hamming Distance d(x, y)',
+        badge: 'Terminology',
+        desc: 'The number of bit positions in which two codewords of the same length differ. Calculated via bitwise XOR: d(TX, RX) = count(TX ⊕ RX).',
+        liveMetric: () => `Live d(TX, RX) = ${state.receivedBits.filter(b => b.flipped).length}`
+      },
+      {
+        id: 'arq_vs_fec',
+        cat: 'terms',
+        title: 'ARQ vs. FEC',
+        badge: 'Error Handling',
+        desc: 'Error Detection + ARQ (Automatic Repeat Request) discards bad frames and sends NAK for retransmission. FEC (Forward Error Correction) reconstructs bits without retransmission.',
+        liveMetric: () => `Pipeline Action: ${state.detectionResult.verdictType === 'valid' ? 'Send ACK' : 'Send NAK → Trigger ARQ Retransmit'}`
+      }
+    ];
+
+    function renderTerminologyCards() {
+      const grid = document.getElementById('terminologyGrid');
+      const filtered = state.selectedConceptCat === 'all'
+        ? CONCEPTS_DATA
+        : CONCEPTS_DATA.filter(c => c.cat === state.selectedConceptCat);
+
+      grid.innerHTML = filtered.map(c => {
+        const isSelected = state.highlightedTermId === c.id;
+        return `
+          <div onclick="selectConceptCard('${c.id}')" class="cursor-pointer rounded-xl p-3.5 bg-obsidian-950 border transition-all duration-200 flex flex-col justify-between gap-2.5 ${isSelected ? 'border-violet-500 ring-1 ring-violet-500/50 bg-violet-950/15' : 'border-zinc-800 hover:border-zinc-700'}">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-1.5">
+                <span class="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-violet-500/15 text-violet-300 border border-violet-500/25">${c.badge}</span>
+              </div>
+              <h3 class="text-sm font-bold text-white mb-1">${c.title}</h3>
+              <p class="text-xs text-zinc-400 leading-relaxed">${c.desc}</p>
+            </div>
+            <div class="pt-2 border-t border-zinc-800/80 font-mono text-[11px] text-emerald-400">
+              ${c.liveMetric()}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // =========================================================================
+    // 10. INTERACTIVE EVENT HANDLERS & PLAYBACK TIMER
+    // =========================================================================
+    function setStep(stepIdx) {
+      state.step = Math.max(0, Math.min(STEPS_META.length - 1, stepIdx));
+      renderAll();
+    }
+
+    function toggleChannelBit(index) {
+      state.noiseMask[index] = !state.noiseMask[index];
+      if (state.step < 2) state.step = 2;
+      recomputeReceiverAndRender();
+    }
+
+    function selectConceptCard(id) {
+      state.highlightedTermId = state.highlightedTermId === id ? null : id;
+      renderTerminologyCards();
+    }
+
+    function togglePlay() {
+      state.isPlaying = !state.isPlaying;
+      const playIcon = document.getElementById('iconPlay');
+      const pauseIcon = document.getElementById('iconPause');
+      const label = document.getElementById('playLabel');
+
+      if (state.isPlaying) {
+        playIcon.classList.add('hidden');
+        pauseIcon.classList.remove('hidden');
+        label.textContent = 'Pause';
+        state.timerId = setInterval(() => {
+          state.step = (state.step + 1) % STEPS_META.length;
+          renderAll();
+        }, state.speedMs);
+      } else {
+        stopPlay();
+      }
+    }
+
+    function stopPlay() {
+      state.isPlaying = false;
+      clearInterval(state.timerId);
+      document.getElementById('iconPlay').classList.remove('hidden');
+      document.getElementById('iconPause').classList.add('hidden');
+      document.getElementById('playLabel').textContent = 'Auto Play';
+    }
+
+    // Wire DOM Controls
+    window.addEventListener('DOMContentLoaded', () => {
+      const inputEl = document.getElementById('userDataInput');
+      inputEl.addEventListener('input', (e) => {
+        state.rawInput = e.target.value;
+        fullRecalculate(true);
+      });
+
+      document.querySelectorAll('.preset-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const val = btn.getAttribute('data-preset');
+          inputEl.value = val;
+          state.rawInput = val;
+          fullRecalculate(true);
+        });
+      });
+
+      document.getElementById('methodSelect').addEventListener('change', (e) => {
+        state.method = e.target.value;
+        fullRecalculate(true);
+      });
+
+      document.getElementById('errorTypeSelect').addEventListener('change', (e) => {
+        state.errorType = e.target.value;
+        state.noiseMask = generateNoiseMask(state.transmittedBits.length, state.errorType);
+        recomputeReceiverAndRender();
+      });
+
+      document.getElementById('btnInjectNoise').addEventListener('click', injectRandomNoise);
+
+      document.getElementById('btnPlayPause').addEventListener('click', togglePlay);
+
+      document.getElementById('btnStep').addEventListener('click', () => {
+        stopPlay();
+        state.step = (state.step + 1) % STEPS_META.length;
+        renderAll();
+      });
+
+      document.getElementById('btnReset').addEventListener('click', () => {
+        stopPlay();
+        state.step = 0;
+        fullRecalculate(true);
+      });
+
+      document.getElementById('speedRange').addEventListener('input', (e) => {
+        state.speedMs = 2400 - parseInt(e.target.value, 10);
+        if (state.isPlaying) {
+          stopPlay();
+          togglePlay();
+        }
+      });
+
+      document.querySelectorAll('.cat-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.cat-tab').forEach(t => {
+            t.className = 'cat-tab px-3 py-1 rounded-lg text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700';
+          });
+          tab.className = 'cat-tab px-3 py-1 rounded-lg text-xs font-medium bg-violet-600 text-white';
+          state.selectedConceptCat = tab.getAttribute('data-cat');
+          renderTerminologyCards();
+        });
+      });
+
+      // Boot initial live state at step 3 so user immediately sees full pipeline + math + Python trace
+      state.step = 3;
+      fullRecalculate(true);
+    });
+  </script>
+</body>
+</html>
