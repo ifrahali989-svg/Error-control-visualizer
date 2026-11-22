@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -19,15 +19,10 @@
           },
           colors: {
             obsidian: {
-              950: '#09090b',
-              900: '#101014',
-              850: '#16161d',
-              800: '#1e1e28',
-              700: '#2a2a38',
-            },
-            violetGlow: {
-              500: '#8b5cf6',
-              400: '#a855f7',
+              950: '#09090d',
+              900: '#111116',
+              850: '#17171f',
+              800: '#1f1f29',
             }
           }
         }
@@ -36,136 +31,94 @@
   </script>
   <style>
     body {
-      background-color: #09090b;
-      color: #f4f4f5;
+      background-color: #09090d;
+      color: #f4f4f6;
       font-family: 'Inter', sans-serif;
       overflow-x: hidden;
     }
-
-    /* Custom Scrollbars for AlgoVision sleek feel */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #09090b;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #27273a;
-      border-radius: 9999px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #8b5cf6;
-    }
-
-    /* Signal Wave Animation */
-    @keyframes pulseFlow {
-      0% { stroke-dashoffset: 48; }
-      100% { stroke-dashoffset: 0; }
-    }
-    .animate-flow {
-      stroke-dasharray: 8 4;
-      animation: pulseFlow 1.2s linear infinite;
-    }
-
-    @keyframes glitchShake {
-      0%, 100% { transform: translateY(0); }
-      25% { transform: translateY(-2px) scale(1.03); }
-      75% { transform: translateY(2px) scale(0.98); }
-    }
-    .bit-error-pulse {
-      animation: glitchShake 0.45s ease-in-out;
-      box-shadow: 0 0 16px rgba(244, 63, 94, 0.55);
-    }
-
-    .code-line-active {
-      background: linear-gradient(90deg, rgba(139, 92, 246, 0.25) 0%, rgba(168, 85, 247, 0.08) 100%);
-      border-left: 3px solid #a855f7;
-    }
-
-    .glass-panel {
-      background: #111116;
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #09090d; }
+    ::-webkit-scrollbar-thumb { background: #272734; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #8b5cf6; }
+    .panel-card {
+      background-color: #111116;
       border: 1px solid #22222c;
-      box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.75);
+    }
+    .code-line-active {
+      background-color: rgba(139, 92, 246, 0.18);
+      border-left: 3px solid #a855f7;
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col bg-[#09090b] text-zinc-100 selection:bg-violet-500/30 selection:text-violet-200">
+<body class="min-h-screen flex flex-col antialiased selection:bg-violet-500/30 selection:text-violet-200">
 
-  <!-- Top Navigation & AlgoVision Header -->
-  <header class="border-b border-[#22222c] bg-[#0c0c10]/95 backdrop-blur-md sticky top-0 z-30">
-    <div class="max-w-[1380px] mx-auto px-6 py-4 flex flex-wrap items-center justify-between gap-4">
-      <!-- Brand + Breadcrumb -->
+  <!-- Clean Top Bar -->
+  <header class="border-b border-zinc-800/80 bg-[#0c0c11]/95 backdrop-blur-md sticky top-0 z-30">
+    <div class="max-w-[1480px] mx-auto px-6 py-3.5 flex flex-wrap items-center justify-between gap-4">
       <div class="flex items-center gap-3.5">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-600 to-fuchsia-600 flex items-center justify-center shadow-lg shadow-violet-600/20">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-600 to-fuchsia-600 flex items-center justify-center shadow-lg shadow-violet-600/20">
           <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
           </svg>
         </div>
-        <div>
-          <div class="flex items-center gap-2.5">
-            <span class="font-bold tracking-tight text-white text-lg">AlgoVision</span>
-            <span class="text-zinc-600">/</span>
-            <span class="text-xs font-mono px-2.5 py-0.5 rounded-md bg-violet-500/10 text-violet-300 border border-violet-500/25">Error Control & Noisy Channel</span>
-          </div>
+        <div class="flex items-center gap-2.5">
+          <span class="font-bold tracking-tight text-white text-lg">AlgoVision</span>
+          <span class="text-zinc-600">/</span>
+          <span class="text-xs font-mono px-2.5 py-1 rounded-md bg-violet-500/10 text-violet-300 border border-violet-500/25">Error Control & Noisy Channel</span>
         </div>
       </div>
 
       <!-- Playback Controls -->
-      <div class="flex items-center gap-2.5 bg-[#111116] border border-[#22222c] rounded-xl p-1.5">
-        <button id="btnReset" title="Reset Simulation" class="px-3 py-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800/80 transition flex items-center gap-1.5 text-xs font-medium">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-          <span class="hidden sm:inline">Reset</span>
+      <div class="flex items-center gap-2.5 bg-obsidian-950 border border-zinc-800 rounded-xl p-1.5">
+        <button id="btnReset" class="px-3 py-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800/80 transition flex items-center gap-1.5 text-xs font-medium">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          <span>Reset</span>
         </button>
 
-        <button id="btnPlayPause" class="px-4 py-2 rounded-lg bg-violet-600 hover:bg-violet-500 text-white font-semibold text-xs flex items-center gap-2 shadow-md shadow-violet-600/20 transition">
-          <svg id="iconPlay" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/></svg>
-          <svg id="iconPause" class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M5.75 3a.75.75 0 00-.75.75v12.5c0 .414.336.75.75.75h1.5a.75.75 0 00.75-.75V3.75A.75.75 0 007.25 3h-1.5zM12.75 3a.75.75 0 00-.75.75v12.5c0 .414.336.75.75.75h1.5a.75.75 0 00.75-.75V3.75a.75.75 0 00-.75-.75h-1.5z"/></svg>
+        <button id="btnPlayPause" class="px-4 py-1.5 rounded-lg bg-violet-600 hover:bg-violet-500 text-white font-semibold text-xs flex items-center gap-1.5 transition">
+          <svg id="iconPlay" class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/></svg>
+          <svg id="iconPause" class="w-3.5 h-3.5 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M5.75 3a.75.75 0 00-.75.75v12.5c0 .414.336.75.75.75h1.5a.75.75 0 00.75-.75V3.75A.75.75 0 007.25 3h-1.5zM12.75 3a.75.75 0 00-.75.75v12.5c0 .414.336.75.75.75h1.5a.75.75 0 00.75-.75V3.75a.75.75 0 00-.75-.75h-1.5z"/></svg>
           <span id="playLabel">Auto Play</span>
         </button>
 
-        <button id="btnStep" class="px-3.5 py-2 rounded-lg bg-zinc-800/90 hover:bg-zinc-700 text-zinc-200 font-medium text-xs flex items-center gap-1.5 transition border border-zinc-700/60">
+        <button id="btnStep" class="px-3.5 py-1.5 rounded-lg bg-zinc-800/90 hover:bg-zinc-700 text-zinc-200 font-medium text-xs flex items-center gap-1.5 transition">
           <span>Next Step</span>
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
         </button>
 
-        <div class="hidden md:flex items-center gap-2.5 pl-3 pr-2 border-l border-[#22222c]">
-          <span class="text-xs text-zinc-400 font-mono">Speed</span>
+        <div class="hidden md:flex items-center gap-2 pl-2.5 pr-1.5 border-l border-zinc-800">
+          <span class="text-[11px] text-zinc-400 font-mono">Speed</span>
           <input id="speedRange" type="range" min="400" max="2000" step="200" value="1100" class="w-20 accent-violet-500 cursor-pointer">
         </div>
       </div>
     </div>
 
-    <!-- Clean 4-Column Parameter Configuration Bar -->
-    <div class="border-t border-[#22222c] bg-[#0e0e13]">
-      <div class="max-w-[1380px] mx-auto px-6 py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 items-end">
-        
-        <!-- 1. User Data Input -->
-        <div class="flex flex-col gap-2">
+    <!-- Parameter Control Bar -->
+    <div class="border-t border-zinc-800/70 bg-[#0f0f14]">
+      <div class="max-w-[1480px] mx-auto px-6 py-4 grid grid-cols-1 md:grid-cols-12 gap-5 items-end">
+        <div class="md:col-span-4 flex flex-col gap-2">
           <div class="flex items-center justify-between">
             <label for="userDataInput" class="text-xs font-medium text-zinc-300">
               Data Input <span class="text-zinc-500">(Bin / Dec)</span>
             </label>
             <div class="flex gap-1.5">
-              <button data-preset="1011001" class="preset-btn text-[11px] font-mono px-2 py-0.5 rounded bg-zinc-900 hover:bg-violet-600/25 text-zinc-400 hover:text-zinc-200 border border-[#22222c] transition">1011001</button>
-              <button data-preset="75" class="preset-btn text-[11px] font-mono px-2 py-0.5 rounded bg-zinc-900 hover:bg-violet-600/25 text-emerald-400 border border-[#22222c] transition">75</button>
+              <button data-preset="1011001" class="preset-btn text-[11px] font-mono px-2 py-0.5 rounded bg-zinc-800/90 hover:bg-violet-600/30 text-zinc-300 transition">1011001</button>
+              <button data-preset="11010110" class="preset-btn text-[11px] font-mono px-2 py-0.5 rounded bg-zinc-800/90 hover:bg-violet-600/30 text-zinc-300 transition">11010110</button>
+              <button data-preset="75" class="preset-btn text-[11px] font-mono px-2 py-0.5 rounded bg-zinc-800/90 hover:bg-violet-600/30 text-emerald-300 transition">75</button>
             </div>
           </div>
           <div class="relative flex items-center">
             <input id="userDataInput" type="text" value="1011001" maxlength="16" placeholder="e.g. 1011001 or 75"
-              class="w-full bg-[#09090b] border border-[#22222c] focus:border-violet-500 rounded-xl px-3.5 py-2 font-mono text-sm text-emerald-400 outline-none transition" />
-            <span id="inputConversionBadge" class="absolute right-2.5 text-[11px] font-mono px-2 py-0.5 rounded-md bg-zinc-900 text-zinc-400 border border-[#22222c]">
+              class="w-full bg-obsidian-950 border border-zinc-800 focus:border-violet-500 rounded-xl px-3.5 py-2 font-mono text-sm text-emerald-400 outline-none transition" />
+            <span id="inputConversionBadge" class="absolute right-2.5 text-[11px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400">
               7-bit BIN
             </span>
           </div>
         </div>
 
-        <!-- 2. Error Control Scheme -->
-        <div class="flex flex-col gap-2">
-          <label for="methodSelect" class="text-xs font-medium text-zinc-300">
-            Error Control Scheme
-          </label>
-          <select id="methodSelect" class="w-full bg-[#09090b] border border-[#22222c] focus:border-violet-500 rounded-xl px-3.5 py-2 text-sm text-zinc-100 outline-none cursor-pointer transition">
+        <div class="md:col-span-3 flex flex-col gap-2">
+          <label for="methodSelect" class="text-xs font-medium text-zinc-300">Error Control Scheme</label>
+          <select id="methodSelect" class="w-full bg-obsidian-950 border border-zinc-800 focus:border-violet-500 rounded-xl px-3.5 py-2 text-sm text-zinc-100 outline-none cursor-pointer">
             <option value="parity_even">Even Parity Check</option>
             <option value="parity_odd">Odd Parity Check</option>
             <option value="crc">CRC-3 (Generator: 1101)</option>
@@ -173,12 +126,9 @@
           </select>
         </div>
 
-        <!-- 3. Channel Condition & Error Type -->
-        <div class="flex flex-col gap-2">
-          <label for="errorTypeSelect" class="text-xs font-medium text-zinc-300">
-            Channel Noise Condition
-          </label>
-          <select id="errorTypeSelect" class="w-full bg-[#09090b] border border-[#22222c] focus:border-violet-500 rounded-xl px-3.5 py-2 text-sm text-zinc-100 outline-none cursor-pointer transition">
+        <div class="md:col-span-3 flex flex-col gap-2">
+          <label for="errorTypeSelect" class="text-xs font-medium text-zinc-300">Channel Noise Condition</label>
+          <select id="errorTypeSelect" class="w-full bg-obsidian-950 border border-zinc-800 focus:border-violet-500 rounded-xl px-3.5 py-2 text-sm text-zinc-100 outline-none cursor-pointer">
             <option value="single">Single-Bit Error (1 flip)</option>
             <option value="burst">Burst Error (Contiguous span)</option>
             <option value="double">Double-Bit Error (2 flips)</option>
@@ -186,304 +136,500 @@
           </select>
         </div>
 
-        <!-- 4. Live Noise Control -->
-        <div class="flex flex-col gap-2">
-          <label class="text-xs font-medium text-zinc-300">
-            Fault Simulation
-          </label>
-          <button id="btnInjectNoise" class="w-full py-2 px-4 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 font-semibold text-xs flex items-center justify-center gap-2 transition">
+        <div class="md:col-span-2 flex flex-col gap-2">
+          <label class="text-xs font-medium text-zinc-300">Fault Simulation</label>
+          <button id="btnInjectNoise" class="w-full py-2 px-3.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 font-medium text-xs flex items-center justify-center gap-1.5 transition">
             <span>⚡ Inject Random Noise</span>
           </button>
         </div>
-
       </div>
     </div>
   </header>
 
-  <!-- Step Progress Stepper Bar -->
-  <div class="bg-[#0b0b0f] border-b border-[#22222c] px-6 py-3">
-    <div class="max-w-[1380px] mx-auto flex flex-wrap items-center justify-between gap-3">
-      <div class="flex items-center gap-2 overflow-x-auto" id="stepStepper">
-        <!-- Steps populated by JS -->
-      </div>
-      <div id="liveStatusPill" class="text-xs font-mono px-3 py-1 rounded-full bg-violet-500/10 text-violet-300 border border-violet-500/25">
-        Step 1/5: Data Encoding
+  <!-- Step Stepper Bar -->
+  <div class="bg-[#0b0b0f] border-b border-zinc-800/70 px-6 py-2.5">
+    <div class="max-w-[1480px] mx-auto flex items-center justify-between gap-4 overflow-x-auto">
+      <div class="flex items-center gap-2 min-w-max" id="stepStepper"></div>
+      <div id="liveStatusPill" class="text-xs font-mono px-3 py-1 rounded-full bg-violet-500/10 text-violet-300 border border-violet-500/25 whitespace-nowrap">
+        Step 4/5: Receiver Verification
       </div>
     </div>
   </div>
 
-  <!-- Main Workspace Split View -->
-  <main class="flex-1 max-w-[1380px] w-full mx-auto px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+  <!-- Main Workspace -->
+  <main class="flex-1 max-w-[1480px] w-full mx-auto px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-    <!-- LEFT STAGE (7 cols): Pipeline + Live Mathematical Breakdown -->
+    <!-- Left Stage -->
     <div class="lg:col-span-7 flex flex-col gap-6">
-
-      <!-- Visual Simulation Stage: Sender -> Noisy Channel -> Receiver -->
-      <section class="glass-panel rounded-2xl p-6 flex flex-col gap-5">
+      <section class="panel-card rounded-2xl p-6 flex flex-col gap-5">
         <div class="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 class="text-base font-bold text-white flex items-center gap-2.5">
-              <span class="w-2 h-2 rounded-full bg-violet-500"></span>
-              Communication Channel Pipeline
-            </h2>
-            <p class="text-xs text-zinc-400 mt-1">Click any bit tile in the <span class="text-amber-300 font-medium">Noisy Channel</span> to toggle <code class="text-zinc-200">0 ↔ 1</code> manually.</p>
+            <h2 class="text-base font-semibold text-white">Communication Channel Pipeline</h2>
+            <p class="text-xs text-zinc-400 mt-1">Click any bit tile in the <span class="text-amber-300">Noisy Channel</span> to toggle <code class="text-zinc-200">0 ↔ 1</code> manually.</p>
           </div>
-          <!-- Clean Minimal Legend -->
           <div class="flex items-center gap-4 text-xs font-mono text-zinc-400">
-            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> Data</span>
-            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-violet-500 inline-block"></span> Check</span>
-            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block"></span> Flipped</span>
+            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> Data</span>
+            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-violet-400"></span> Check</span>
+            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-rose-400"></span> Flipped</span>
           </div>
         </div>
 
-        <!-- 3-Stage Pipeline Visualization -->
-        <div class="flex flex-col gap-3">
-
-          <!-- STAGE 1: SENDER -->
-          <div id="cardSender" class="rounded-xl bg-[#09090b] border border-[#22222c] p-5 transition-all duration-300">
-            <div class="flex items-center justify-between mb-3.5">
+        <div class="flex flex-col gap-4">
+          <!-- 1. Sender -->
+          <div id="cardSender" class="rounded-xl bg-obsidian-950 border border-zinc-800/90 p-4 transition-all">
+            <div class="flex items-center justify-between mb-3">
               <div class="flex items-center gap-2.5">
-                <span class="px-2.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 font-mono text-xs font-semibold">TX • SENDER</span>
+                <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 font-mono text-[11px] font-semibold">TX • SENDER</span>
                 <span class="text-xs text-zinc-400">Encoded Codeword</span>
               </div>
               <span id="senderSummaryBadge" class="text-xs font-mono text-zinc-400">8 bits</span>
             </div>
-            <div id="senderBitsContainer" class="flex flex-wrap items-center gap-2.5 min-h-[52px]">
-              <!-- Rendered dynamically -->
-            </div>
+            <div id="senderBitsContainer" class="flex flex-wrap items-center gap-2 min-h-[48px]"></div>
           </div>
 
-          <!-- Sleek Minimal Directional Flow Divider -->
-          <div class="relative flex items-center justify-center py-1.5">
-            <div class="w-full h-px bg-[#22222c]"></div>
-            <div id="channelNoiseBanner" class="absolute px-3.5 py-1 rounded-full bg-[#111116] border border-[#22222c] text-zinc-300 text-xs font-mono flex items-center gap-2">
-              <span class="text-amber-400">↓</span>
-              <span>Noisy Transmission Medium</span>
-              <span class="text-amber-400">↓</span>
-            </div>
+          <!-- Divider -->
+          <div class="flex items-center gap-3 px-2">
+            <div class="h-px flex-1 bg-zinc-800"></div>
+            <span class="text-[11px] font-mono text-amber-300/90 bg-amber-500/10 border border-amber-500/20 px-3 py-0.5 rounded-full">
+              ↓ Noisy Transmission Medium ↓
+            </span>
+            <div class="h-px flex-1 bg-zinc-800"></div>
           </div>
 
-          <!-- STAGE 2: NOISY CHANNEL (Interactive Bit Flipper) -->
-          <div id="cardChannel" class="rounded-xl bg-[#0d0c12] border border-amber-500/25 p-5 transition-all duration-300">
-            <div class="flex flex-wrap items-center justify-between gap-2 mb-3.5">
+          <!-- 2. Channel -->
+          <div id="cardChannel" class="rounded-xl bg-obsidian-950 border border-amber-500/25 p-4 transition-all">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
               <div class="flex items-center gap-2.5">
-                <span class="px-2.5 py-0.5 rounded-md bg-amber-500/10 text-amber-300 border border-amber-500/25 font-mono text-xs font-semibold">CHANNEL</span>
-                <span id="errorClassificationTag" class="text-xs font-medium text-rose-400">Single-Bit Error Active</span>
+                <span class="px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/25 font-mono text-[11px] font-semibold">CHANNEL</span>
+                <span id="errorClassificationTag" class="text-xs font-medium text-rose-400">Single-Bit Error</span>
               </div>
-              <span id="burstSpanBadge" class="text-xs font-mono text-zinc-400">Hamming Distance d = 1</span>
+              <span id="burstSpanBadge" class="text-xs font-mono text-zinc-400">Hamming d = 1</span>
             </div>
 
-            <!-- Interactive Bits in Channel -->
-            <div id="channelBitsContainer" class="flex flex-wrap items-center gap-2.5 min-h-[56px]">
-              <!-- Rendered dynamically; clickable -->
-            </div>
+            <div id="channelBitsContainer" class="flex flex-wrap items-center gap-2 min-h-[48px]"></div>
 
-            <!-- Burst Length Indicator -->
-            <div id="burstIndicatorBar" class="mt-3.5 hidden">
-              <div class="flex items-center gap-2 text-xs font-mono text-rose-300 bg-rose-500/10 border border-rose-500/20 rounded-lg px-3 py-1.5">
+            <div id="burstIndicatorBar" class="mt-3 hidden">
+              <div class="inline-flex items-center gap-2 text-xs font-mono text-rose-300 bg-rose-500/10 border border-rose-500/20 rounded-lg px-3 py-1.5">
                 <span>Burst Span:</span>
                 <strong id="burstLengthText" class="text-white">3 bits</strong>
               </div>
             </div>
           </div>
 
-          <!-- Sleek Minimal Directional Flow Divider -->
-          <div class="relative flex items-center justify-center py-1">
-            <div class="w-full h-px bg-[#22222c]"></div>
-            <span class="absolute px-2.5 py-0.5 rounded-full bg-[#111116] border border-[#22222c] text-zinc-400 text-xs font-mono">↓</span>
+          <!-- Divider -->
+          <div class="flex items-center gap-3 px-2">
+            <div class="h-px flex-1 bg-zinc-800"></div>
+            <span class="text-[11px] font-mono text-cyan-300/90 bg-cyan-500/10 border border-cyan-500/20 px-3 py-0.5 rounded-full">
+              ↓ Arriving at Destination ↓
+            </span>
+            <div class="h-px flex-1 bg-zinc-800"></div>
           </div>
 
-          <!-- STAGE 3: RECEIVER -->
-          <div id="cardReceiver" class="rounded-xl bg-[#09090b] border border-[#22222c] p-5 transition-all duration-300">
-            <div class="flex flex-wrap items-center justify-between gap-2 mb-3.5">
+          <!-- 3. Receiver -->
+          <div id="cardReceiver" class="rounded-xl bg-obsidian-950 border border-zinc-800/90 p-4 transition-all">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
               <div class="flex items-center gap-2.5">
-                <span class="px-2.5 py-0.5 rounded-md bg-cyan-500/10 text-cyan-300 border border-cyan-500/25 font-mono text-xs font-semibold">RX • RECEIVER</span>
-                <span class="text-xs text-zinc-400">Syndrome Verification</span>
+                <span class="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/25 font-mono text-[11px] font-semibold">RX • RECEIVER</span>
+                <span class="text-xs text-zinc-400">Verification</span>
               </div>
-              <div id="receiverDecisionBadge" class="px-3 py-1 rounded-lg font-mono text-xs font-bold bg-rose-500/15 text-rose-300 border border-rose-500/30">
+              <div id="receiverDecisionBadge" class="px-3 py-1 rounded-lg font-mono text-xs font-semibold bg-rose-500/15 text-rose-300 border border-rose-500/30">
                 NAK • ERROR DETECTED
               </div>
             </div>
-            <div id="receiverBitsContainer" class="flex flex-wrap items-center gap-2.5 min-h-[52px]">
-              <!-- Rendered dynamically -->
-            </div>
+            <div id="receiverBitsContainer" class="flex flex-wrap items-center gap-2 min-h-[48px]"></div>
           </div>
-
         </div>
       </section>
 
-      <!-- Live Step-by-Step Mathematical Calculation Panel -->
-      <section class="glass-panel rounded-2xl p-6 flex-1 flex flex-col gap-4">
-        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#22222c] pb-3.5">
-          <div class="flex items-center gap-3">
-            <span class="w-8 h-8 rounded-lg bg-violet-500/10 border border-violet-500/25 text-violet-400 flex items-center justify-center font-mono text-sm font-bold">∑</span>
-            <div>
-              <h3 class="text-base font-bold text-white">Live Mathematical Breakdown</h3>
-              <p class="text-xs text-zinc-400">Real-time binary arithmetic from your input</p>
-            </div>
+      <!-- Live Math Breakdown -->
+      <section class="panel-card rounded-2xl p-6 flex flex-col gap-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h3 class="text-base font-semibold text-white">Live Mathematical Breakdown</h3>
+            <p class="text-xs text-zinc-400 mt-0.5">Step-by-step binary arithmetic computed from your input</p>
           </div>
-          <span id="mathFormulaBadge" class="font-mono text-xs px-3 py-1 rounded-lg bg-[#09090b] border border-[#22222c] text-cyan-300">
-            Even Parity: ∑(bits) mod 2 == 0
+          <span id="mathFormulaBadge" class="font-mono text-xs px-3 py-1 rounded-lg bg-obsidian-950 border border-zinc-800 text-cyan-300">
+            Even Parity
           </span>
         </div>
-
-        <div id="liveMathContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs leading-relaxed">
-          <!-- Populated dynamically -->
-        </div>
+        <div id="liveMathContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs"></div>
       </section>
-
     </div>
 
-    <!-- RIGHT STAGE (5 cols): Synchronized Live Python Code & Variable State Inspector -->
+    <!-- Right Stage: Python Execution Trace -->
     <div class="lg:col-span-5 flex flex-col gap-6">
-
-      <!-- Live Python Execution Trace -->
-      <section class="glass-panel rounded-2xl overflow-hidden flex flex-col h-full">
-        <!-- Window Title Bar -->
-        <div class="bg-[#15151c] px-5 py-3.5 border-b border-[#22222c] flex items-center justify-between">
-          <div class="flex items-center gap-2.5">
+      <section class="panel-card rounded-2xl overflow-hidden flex flex-col">
+        <div class="bg-[#15151c] px-5 py-3.5 border-b border-zinc-800/90 flex items-center justify-between">
+          <div class="flex items-center gap-2">
             <div class="flex gap-1.5">
               <span class="w-2.5 h-2.5 rounded-full bg-rose-500/80"></span>
               <span class="w-2.5 h-2.5 rounded-full bg-amber-500/80"></span>
               <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></span>
             </div>
-            <span class="font-mono text-xs text-zinc-200 ml-1.5 font-semibold" id="pythonFileName">parity_check_live.py</span>
+            <span class="font-mono text-xs text-zinc-300 ml-2 font-medium" id="pythonFileName">parity_check_live.py</span>
           </div>
-          <span class="text-xs font-mono px-2.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
+          <span class="text-[11px] font-mono px-2.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
             Python 3.12
           </span>
         </div>
 
-        <!-- Highlighted Python Code Lines -->
-        <div id="pythonCodeContainer" class="p-4 bg-[#09090b] font-mono text-[12.5px] leading-7 overflow-x-auto select-text flex-1">
-          <!-- Rendered dynamically with active line highlight -->
-        </div>
+        <div id="pythonCodeContainer" class="p-4 bg-[#0b0b0f] font-mono text-[12px] leading-relaxed overflow-x-auto"></div>
 
-        <!-- Live Variable Watch Inspector -->
-        <div class="border-t border-[#22222c] bg-[#111116] p-5">
+        <div class="border-t border-zinc-800/90 bg-[#121218] p-5">
           <div class="flex items-center justify-between mb-3">
-            <span class="text-xs font-semibold uppercase tracking-wider text-violet-400 flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-violet-400"></span>
-              Runtime Variables
-            </span>
+            <span class="text-xs font-semibold text-violet-300">Live Runtime Variables</span>
             <span id="execLineBadge" class="text-xs font-mono text-zinc-400">Line 1</span>
           </div>
-          <div id="liveVariablesGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-2.5 font-mono text-xs">
-            <!-- Dynamically updated runtime variables -->
-          </div>
+          <div id="liveVariablesGrid" class="grid grid-cols-2 gap-2.5 font-mono text-xs"></div>
         </div>
 
-        <!-- Single-line STDOUT Console Output -->
-        <div class="border-t border-[#22222c] bg-[#09090b] px-5 py-3.5 font-mono text-xs">
-          <div id="pythonConsoleOutput" class="text-emerald-400 truncate">
-            >>> Ready
+        <div class="border-t border-zinc-800/90 bg-[#09090d] p-4 font-mono text-xs">
+          <div class="text-[11px] text-zinc-500 mb-1.5">STDOUT • Receiver Console</div>
+          <div id="pythonConsoleOutput" class="text-emerald-400 leading-relaxed">
+            >>> Ready...
           </div>
         </div>
       </section>
-
     </div>
-
   </main>
 
-  <!-- Interactive Terminology & Core Concepts Explorer -->
-  <section class="max-w-[1380px] w-full mx-auto px-6 pb-10">
-    <div class="glass-panel rounded-2xl p-6">
-      <div class="flex flex-wrap items-center justify-between gap-4 mb-6 border-b border-[#22222c] pb-4">
+  <!-- Terminology Explorer -->
+  <section class="max-w-[1480px] w-full mx-auto px-6 pb-10">
+    <div class="panel-card rounded-2xl p-6">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
         <div>
-          <h2 class="text-base font-bold text-white">Networking Terminology & Concept Explorer</h2>
-          <p class="text-xs text-zinc-400 mt-0.5">Select a category or click any card to inspect live telemetry</p>
+          <h2 class="text-base font-semibold text-white">Networking Terminology & Core Concepts</h2>
+          <p class="text-xs text-zinc-400 mt-0.5">Live telemetry mapped to key data communication definitions</p>
         </div>
         <div class="flex gap-2 flex-wrap" id="conceptFilterTabs">
-          <button data-cat="all" class="cat-tab px-3.5 py-1.5 rounded-lg text-xs font-medium bg-violet-600 text-white transition">All Concepts</button>
-          <button data-cat="need" class="cat-tab px-3.5 py-1.5 rounded-lg text-xs font-medium bg-[#09090b] text-zinc-300 border border-[#22222c] hover:border-zinc-700 transition">Need & Channel</button>
-          <button data-cat="errors" class="cat-tab px-3.5 py-1.5 rounded-lg text-xs font-medium bg-[#09090b] text-zinc-300 border border-[#22222c] hover:border-zinc-700 transition">Types of Errors</button>
-          <button data-cat="terms" class="cat-tab px-3.5 py-1.5 rounded-lg text-xs font-medium bg-[#09090b] text-zinc-300 border border-[#22222c] hover:border-zinc-700 transition">Key Terminology</button>
+          <button data-cat="all" class="cat-tab px-3 py-1.5 rounded-lg text-xs font-medium bg-violet-600 text-white transition">All</button>
+          <button data-cat="need" class="cat-tab px-3 py-1.5 rounded-lg text-xs font-medium bg-zinc-800/80 text-zinc-300 hover:bg-zinc-700 transition">Need & Channel</button>
+          <button data-cat="errors" class="cat-tab px-3 py-1.5 rounded-lg text-xs font-medium bg-zinc-800/80 text-zinc-300 hover:bg-zinc-700 transition">Error Types</button>
+          <button data-cat="terms" class="cat-tab px-3 py-1.5 rounded-lg text-xs font-medium bg-zinc-800/80 text-zinc-300 hover:bg-zinc-700 transition">Terminology</button>
         </div>
       </div>
 
-      <!-- Airy 2x4 Cards Grid -->
-      <div id="terminologyGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <!-- Populated dynamically -->
-      </div>
+      <div id="terminologyGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
     </div>
   </section>
 
   <script>
-// ... existing code ... -->
+    const state = {
+      rawInput: '1011001',
+      binaryData: '1011001',
+      inputMode: '7-bit BIN',
+      method: 'parity_even',
+      errorType: 'single',
+      step: 3,
+      isPlaying: false,
+      speedMs: 1100,
+      timerId: null,
+      dataBits: [],
+      redundantBits: [],
+      transmittedBits: [],
+      noiseMask: [],
+      receivedBits: [],
+      mathDetails: {},
+      detectionResult: {
+        errorOccurred: false,
+        errorDetected: false,
+        syndrome: '0',
+        statusText: 'ACK',
+        verdictType: 'valid'
+      },
+      selectedConceptCat: 'all'
+    };
+
+    const STEPS_META = [
+      { id: 0, label: 'Step 1/5: Data Encoding', short: '1. Input' },
+      { id: 1, label: 'Step 2/5: Redundancy Added', short: '2. Encode' },
+      { id: 2, label: 'Step 3/5: Channel Transit', short: '3. Channel' },
+      { id: 3, label: 'Step 4/5: Receiver Verification', short: '4. Verify' },
+      { id: 4, label: 'Step 5/5: ACK / NAK Decision', short: '5. Decision' }
+    ];
+
+    const CRC_GENERATOR = '1101';
+
+    function parseUserInput(raw) {
+      const cleaned = raw.trim();
+      if (!cleaned) return { bin: '1011001', badge: 'Default BIN' };
+      if (/^[01]+$/.test(cleaned)) {
+        const sliced = cleaned.slice(0, 12);
+        return { bin: sliced, badge: `${sliced.length}-bit BIN` };
+      }
+      if (/^\d+$/.test(cleaned)) {
+        const num = Math.min(parseInt(cleaned, 10), 4095);
+        const bin = num.toString(2).padStart(4, '0');
+        return { bin, badge: `Dec ${num} → ${bin.length}b` };
+      }
+      const onlyBin = cleaned.replace(/[^01]/g, '');
+      if (onlyBin.length > 0) {
+        return { bin: onlyBin.slice(0, 12), badge: `${onlyBin.slice(0, 12).length}-bit BIN` };
+      }
+      const asciiBin = cleaned.charCodeAt(0).toString(2).padStart(8, '0');
+      return { bin: asciiBin, badge: `'${cleaned[0]}' → 8b` };
+    }
+
+    function xorStrings(a, b) {
+      let res = '';
+      for (let i = 1; i < b.length; i++) {
+        res += a[i] === b[i] ? '0' : '1';
+      }
+      return res;
+    }
+
+    function computeCRC(bitString, generator) {
+      const pick = generator.length;
+      let tmp = bitString.slice(0, pick);
+      const steps = [];
+      for (let i = pick; i <= bitString.length; i++) {
+        const quotientBit = tmp[0];
+        const divisor = quotientBit === '1' ? generator : '0'.repeat(pick);
+        const rem = xorStrings(tmp, divisor);
+        steps.push({ window: tmp, divisor, remainder: rem });
+        tmp = i < bitString.length ? rem + bitString[i] : rem;
+      }
+      return { remainder: tmp, steps };
+    }
+
+    function computeChecksum(dataStr) {
+      const padLen = (4 - (dataStr.length % 4)) % 4;
+      const padded = '0'.repeat(padLen) + dataStr;
+      const blocks = [];
+      for (let i = 0; i < padded.length; i += 4) blocks.push(padded.slice(i, i + 4));
+      let sum = 0;
+      blocks.forEach(b => { sum += parseInt(b, 2); });
+      let wrapped = sum;
+      while (wrapped > 15) wrapped = (wrapped & 15) + (wrapped >> 4);
+      const sumBin = wrapped.toString(2).padStart(4, '0');
+      const checksum = sumBin.split('').map(b => b === '0' ? '1' : '0').join('');
+      return { padded, blocks, wrappedBin: sumBin, checksum };
+    }
+
+    function encodeDataword(dataBin, method) {
+      const dataArr = dataBin.split('');
+      if (method === 'parity_even' || method === 'parity_odd') {
+        const ones = dataArr.filter(b => b === '1').length;
+        const isEven = ones % 2 === 0;
+        const parityBit = method === 'parity_even' ? (isEven ? '0' : '1') : (isEven ? '1' : '0');
+        return {
+          effectiveData: dataArr,
+          redundant: [parityBit],
+          math: { type: method, onesCount: ones, parityBit }
+        };
+      }
+      if (method === 'crc') {
+        const appended = dataBin + '0'.repeat(CRC_GENERATOR.length - 1);
+        const { remainder, steps } = computeCRC(appended, CRC_GENERATOR);
+        return {
+          effectiveData: dataArr,
+          redundant: remainder.split(''),
+          math: { type: 'crc', appended, remainder, steps }
+        };
+      }
+      const cs = computeChecksum(dataBin);
+      return {
+        effectiveData: cs.padded.split(''),
+        redundant: cs.checksum.split(''),
+        math: { type: 'checksum', ...cs }
+      };
+    }
+
+    function generateNoiseMask(totalLength, errorType) {
+      const mask = new Array(totalLength).fill(false);
+      if (errorType === 'none' || totalLength === 0) return mask;
+      if (errorType === 'single') {
+        mask[Math.floor(totalLength / 2)] = true;
+      } else if (errorType === 'double') {
+        const idx1 = Math.max(0, Math.floor(totalLength / 2) - 1);
+        const idx2 = Math.min(totalLength - 1, idx1 + 2);
+        mask[idx1] = true;
+        if (idx2 !== idx1) mask[idx2] = true;
+      } else if (errorType === 'burst') {
+        const burstLen = Math.min(totalLength, totalLength >= 8 ? 4 : 3);
+        const start = Math.max(0, Math.floor((totalLength - burstLen) / 2));
+        for (let i = start; i < start + burstLen; i++) {
+          if (i === start || i === start + burstLen - 1 || i % 2 === 0) mask[i] = true;
+        }
+      }
+      return mask;
+    }
+
+    function injectRandomNoise() {
+      const len = state.transmittedBits.length;
+      if (len === 0) return;
+      const mask = new Array(len).fill(false);
+      if (state.errorType === 'none') {
+        state.errorType = 'single';
+        document.getElementById('errorTypeSelect').value = 'single';
+      }
+      if (state.errorType === 'single') {
+        mask[Math.floor(Math.random() * len)] = true;
+      } else if (state.errorType === 'double') {
+        const r1 = Math.floor(Math.random() * len);
+        const r2 = (r1 + 1 + Math.floor(Math.random() * (len - 1))) % len;
+        mask[r1] = true;
+        mask[r2] = true;
+      } else if (state.errorType === 'burst') {
+        const bLen = Math.min(len, 3 + Math.floor(Math.random() * 2));
+        const start = Math.floor(Math.random() * (len - bLen + 1));
+        for (let i = start; i < start + bLen; i++) {
+          if (i === start || i === start + bLen - 1 || Math.random() > 0.35) mask[i] = true;
+        }
+      }
+      state.noiseMask = mask;
+      if (state.step < 2) state.step = 2;
+      recomputeReceiverAndRender();
+    }
+
+    function verifyReceivedCodeword(receivedArr, method) {
+      const rxStr = receivedArr.map(x => x.bit).join('');
+      const errorOccurred = receivedArr.some(x => x.flipped);
+
+      if (method === 'parity_even' || method === 'parity_odd') {
+        const ones = receivedArr.filter(x => x.bit === '1').length;
+        const isEven = ones % 2 === 0;
+        const valid = method === 'parity_even' ? isEven : !isEven;
+        return buildVerdict(errorOccurred, !valid, valid ? '0 (Valid)' : '1 (Mismatch)', { rxOnes: ones, valid });
+      }
+      if (method === 'crc') {
+        const { remainder, steps } = computeCRC(rxStr, CRC_GENERATOR);
+        const valid = /^0+$/.test(remainder);
+        return buildVerdict(errorOccurred, !valid, remainder, { rxStr, remainder, steps, valid });
+      }
+      const blocks = [];
+      for (let i = 0; i < rxStr.length; i += 4) blocks.push(rxStr.slice(i, i + 4));
+      let sum = 0;
+      blocks.forEach(b => { sum += parseInt(b, 2); });
+      while (sum > 15) sum = (sum & 15) + (sum >> 4);
+      const sumBin = sum.toString(2).padStart(4, '0');
+      const complement = sumBin.split('').map(b => b === '0' ? '1' : '0').join('');
+      const valid = complement === '0000';
+      return buildVerdict(errorOccurred, !valid, complement, { blocks, sumBin, complement, valid });
+    }
+
+    function buildVerdict(errorOccurred, errorDetected, syndrome, rxMath) {
+      let statusText = 'ACK • CLEAN SIGNAL';
+      let verdictType = 'valid';
+      if (errorOccurred && errorDetected) {
+        statusText = 'NAK • ERROR DETECTED';
+        verdictType = 'detected';
+      } else if (errorOccurred && !errorDetected) {
+        statusText = 'UNDETECTED COLLISION';
+        verdictType = 'undetected_trap';
+      } else if (!errorOccurred && errorDetected) {
+        statusText = 'NAK • SYNDROME NON-ZERO';
+        verdictType = 'detected';
+      }
+      return { errorOccurred, errorDetected, syndrome, statusText, verdictType, rxMath };
+    }
+
+    function fullRecalculate(resetNoise = true) {
+      const parsed = parseUserInput(state.rawInput);
+      state.binaryData = parsed.bin;
+      state.inputMode = parsed.badge;
+      document.getElementById('inputConversionBadge').textContent = parsed.badge;
+
+      const encoded = encodeDataword(state.binaryData, state.method);
+      state.dataBits = encoded.effectiveData;
+      state.redundantBits = encoded.redundant;
+      state.mathDetails = encoded.math;
+
+      state.transmittedBits = [
+        ...state.dataBits.map(b => ({ bit: b, isRedundant: false })),
+        ...state.redundantBits.map(b => ({ bit: b, isRedundant: true }))
+      ];
+
+      if (resetNoise || state.noiseMask.length !== state.transmittedBits.length) {
+        state.noiseMask = generateNoiseMask(state.transmittedBits.length, state.errorType);
+      }
+      recomputeReceiverAndRender();
+    }
+
+    function recomputeReceiverAndRender() {
+      state.receivedBits = state.transmittedBits.map((item, idx) => {
+        const flipped = !!state.noiseMask[idx];
+        return {
+          bit: flipped ? (item.bit === '0' ? '1' : '0') : item.bit,
+          originalBit: item.bit,
+          isRedundant: item.isRedundant,
+          flipped
+        };
+      });
+      state.detectionResult = verifyReceivedCodeword(state.receivedBits, state.method);
+      renderAll();
+    }
+
+    function renderAll() {
+      renderStepper();
+      renderPipeline();
+      renderLiveMath();
+      renderPythonPanel();
+      renderTerminologyCards();
+    }
+
+    function renderStepper() {
+      document.getElementById('stepStepper').innerHTML = STEPS_META.map((s, idx) => {
+        const active = state.step === idx;
+        const done = state.step > idx;
+        const cls = active
+          ? 'bg-violet-600 text-white border-violet-500'
+          : done
+            ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/25'
+            : 'bg-obsidian-950 text-zinc-400 border-zinc-800 hover:border-zinc-700';
+        return `<button onclick="setStep(${idx})" class="px-3 py-1 rounded-lg border text-xs font-mono transition ${cls}">${s.short}</button>`;
+      }).join('');
+      document.getElementById('liveStatusPill').textContent = STEPS_META[state.step].label;
+    }
+
     function renderBitBox(bitObj, index, mode) {
-      // mode: 'sender' | 'channel' | 'receiver'
       const isFlipped = bitObj.flipped && state.step >= 2;
       const isRedundant = bitObj.isRedundant;
 
-      let bgClass = isRedundant
-        ? 'bg-violet-500/10 border-violet-500/35 text-violet-200'
-        : 'bg-emerald-500/10 border-emerald-500/35 text-emerald-200';
-
-      let dotColor = isRedundant ? 'bg-violet-400' : 'bg-emerald-400';
+      let cardCls = isRedundant
+        ? 'bg-violet-500/10 border-violet-500/30 text-violet-200'
+        : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-200';
+      let dotCls = isRedundant ? 'bg-violet-400' : 'bg-emerald-400';
 
       if (mode === 'sender' && state.step < 1 && isRedundant) {
-        bgClass = 'bg-zinc-900/50 border-dashed border-zinc-700 text-zinc-500';
-        dotColor = 'bg-zinc-600';
+        cardCls = 'bg-zinc-900/50 border-dashed border-zinc-700 text-zinc-500';
+        dotCls = 'bg-zinc-600';
       }
-
       if (isFlipped && (mode === 'channel' || mode === 'receiver')) {
-        bgClass = 'bg-rose-500/20 border-rose-500 text-rose-100 bit-error-pulse';
-        dotColor = 'bg-rose-500';
+        cardCls = 'bg-rose-500/20 border-rose-500/60 text-rose-100';
+        dotCls = 'bg-rose-400';
       }
 
-      const clickableAttr = mode === 'channel'
-        ? `onclick="toggleChannelBit(${index})" title="Click to flip bit #${index}"`
-        : '';
-      const cursorCls = mode === 'channel' ? 'cursor-pointer hover:scale-105 active:scale-95' : '';
-
+      const clickAttr = mode === 'channel' ? `onclick="toggleChannelBit(${index})" title="Flip bit b${index}"` : '';
+      const cursorCls = mode === 'channel' ? 'cursor-pointer hover:border-amber-400/70' : '';
       const displayVal = (mode === 'sender' && state.step < 1 && isRedundant) ? '?' : bitObj.bit;
 
       return `
-        <div ${clickableAttr} class="select-none transition-all duration-200 rounded-xl border px-3 py-2 min-w-[46px] flex flex-col items-center justify-center gap-0.5 ${bgClass} ${cursorCls}">
+        <div ${clickAttr} class="select-none transition rounded-xl border px-3 py-2 min-w-[44px] flex flex-col items-center gap-1 ${cardCls} ${cursorCls}">
           <div class="flex items-center gap-1">
-            <span class="w-1.5 h-1.5 rounded-full ${dotColor}"></span>
+            <span class="w-1.5 h-1.5 rounded-full ${dotCls}"></span>
             <span class="text-[10px] font-mono text-zinc-400">b${index}</span>
           </div>
-          <span class="font-mono text-lg font-bold leading-tight">${displayVal}</span>
+          <span class="font-mono text-base font-bold leading-none">${displayVal}</span>
         </div>
       `;
     }
 
     function renderPipeline() {
-      // Highlight active stage card
-      const cardSender = document.getElementById('cardSender');
-      const cardChannel = document.getElementById('cardChannel');
-      const cardReceiver = document.getElementById('cardReceiver');
+      document.getElementById('cardSender').className = `rounded-xl bg-obsidian-950 border p-4 transition-all ${state.step <= 1 ? 'border-emerald-500/50' : 'border-zinc-800/90'}`;
+      document.getElementById('cardChannel').className = `rounded-xl bg-obsidian-950 border p-4 transition-all ${state.step === 2 ? 'border-amber-500/60' : 'border-amber-500/25'}`;
+      document.getElementById('cardReceiver').className = `rounded-xl bg-obsidian-950 border p-4 transition-all ${state.step >= 3 ? 'border-cyan-500/50' : 'border-zinc-800/90'}`;
 
-      cardSender.classList.toggle('ring-1', state.step <= 1);
-      cardSender.classList.toggle('ring-emerald-500/40', state.step <= 1);
+      document.getElementById('senderBitsContainer').innerHTML = state.transmittedBits.map((b, i) => renderBitBox(b, i, 'sender')).join('');
+      document.getElementById('senderSummaryBadge').textContent = `${state.dataBits.length}d + ${state.redundantBits.length}c = ${state.transmittedBits.length} bits`;
+      document.getElementById('channelBitsContainer').innerHTML = state.receivedBits.map((b, i) => renderBitBox(b, i, 'channel')).join('');
 
-      cardChannel.classList.toggle('ring-1', state.step === 2);
-      cardChannel.classList.toggle('ring-amber-500/50', state.step === 2);
-
-      cardReceiver.classList.toggle('ring-1', state.step >= 3);
-      cardReceiver.classList.toggle('ring-cyan-500/50', state.step >= 3);
-
-      // Render Sender Bits
-      document.getElementById('senderBitsContainer').innerHTML =
-        state.transmittedBits.map((b, i) => renderBitBox(b, i, 'sender')).join('');
-      document.getElementById('senderSummaryBadge').textContent =
-        `${state.dataBits.length} data + ${state.redundantBits.length} check = ${state.transmittedBits.length} bits`;
-
-      // Render Channel Bits
-      document.getElementById('channelBitsContainer').innerHTML =
-        state.receivedBits.map((b, i) => renderBitBox(b, i, 'channel')).join('');
-
-      // Analyze actual flipped bits for Hamming Distance & Burst Span
-      const flippedIndices = state.receivedBits
-        .map((b, i) => (b.flipped ? i : -1))
-        .filter(i => i !== -1);
-
+      const flippedIndices = state.receivedBits.map((b, i) => (b.flipped ? i : -1)).filter(i => i !== -1);
       const errTag = document.getElementById('errorClassificationTag');
       const burstBar = document.getElementById('burstIndicatorBar');
 
       if (flippedIndices.length === 0) {
-        errTag.textContent = 'Clean Channel (0 Bit Errors)';
+        errTag.textContent = 'Clean Channel (0 errors)';
         errTag.className = 'text-xs font-medium text-emerald-400';
         burstBar.classList.add('hidden');
       } else if (flippedIndices.length === 1) {
@@ -493,35 +639,27 @@
       } else {
         const first = flippedIndices[0];
         const last = flippedIndices[flippedIndices.length - 1];
-        const burstLen = last - first + 1;
-        errTag.textContent = `Burst / Multi-Bit Error (${flippedIndices.length} flips)`;
+        errTag.textContent = `Multi-Bit / Burst (${flippedIndices.length} flips)`;
         errTag.className = 'text-xs font-medium text-rose-400';
         burstBar.classList.remove('hidden');
-        document.getElementById('burstLengthText').textContent = `${burstLen} bits (b${first} → b${last})`;
+        document.getElementById('burstLengthText').textContent = `${last - first + 1} bits (b${first} → b${last})`;
       }
 
-      document.getElementById('burstSpanBadge').textContent =
-        `Hamming Distance d = ${flippedIndices.length}`;
+      document.getElementById('burstSpanBadge').textContent = `Hamming d = ${flippedIndices.length}`;
+      document.getElementById('receiverBitsContainer').innerHTML = state.receivedBits.map((b, i) => renderBitBox(b, i, 'receiver')).join('');
 
-      // Render Receiver Bits
-      document.getElementById('receiverBitsContainer').innerHTML =
-        state.receivedBits.map((b, i) => renderBitBox(b, i, 'receiver')).join('');
-
-      // Receiver Decision Badge
       const decBadge = document.getElementById('receiverDecisionBadge');
       if (state.step < 3) {
-        decBadge.textContent = 'WAITING...';
-        decBadge.className = 'px-3 py-1 rounded-lg font-mono text-xs font-bold bg-zinc-900 text-zinc-400 border border-[#22222c]';
+        decBadge.textContent = 'AWAITING FRAME';
+        decBadge.className = 'px-3 py-1 rounded-lg font-mono text-xs font-semibold bg-zinc-900 text-zinc-400 border border-zinc-800';
       } else {
         const v = state.detectionResult.verdictType;
         decBadge.textContent = state.detectionResult.statusText;
-        if (v === 'valid') {
-          decBadge.className = 'px-3 py-1 rounded-lg font-mono text-xs font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30';
-        } else if (v === 'detected') {
-          decBadge.className = 'px-3 py-1 rounded-lg font-mono text-xs font-bold bg-rose-500/15 text-rose-300 border border-rose-500/30';
-        } else {
-          decBadge.className = 'px-3 py-1 rounded-lg font-mono text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40';
-        }
+        decBadge.className = v === 'valid'
+          ? 'px-3 py-1 rounded-lg font-mono text-xs font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
+          : v === 'detected'
+            ? 'px-3 py-1 rounded-lg font-mono text-xs font-semibold bg-rose-500/15 text-rose-300 border border-rose-500/30'
+            : 'px-3 py-1 rounded-lg font-mono text-xs font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/30';
       }
     }
 
@@ -532,110 +670,399 @@
       const rx = state.detectionResult.rxMath;
 
       if (state.method === 'parity_even' || state.method === 'parity_odd') {
-        const modeName = state.method === 'parity_even' ? 'Even Parity' : 'Odd Parity';
-        formulaBadge.textContent = `${modeName}: ∑(1s) must be ${state.method === 'parity_even' ? 'EVEN' : 'ODD'}`;
+        const isEvenMode = state.method === 'parity_even';
+        formulaBadge.textContent = isEvenMode ? 'Even Parity: ∑(1s) mod 2 == 0' : 'Odd Parity: ∑(1s) mod 2 == 1';
         container.innerHTML = `
-          <div class="rounded-xl bg-[#09090b] border border-[#22222c] p-4 space-y-2">
-            <div class="text-violet-400 font-semibold uppercase text-xs mb-1">1. Sender Encoding</div>
-            <div class="text-zinc-300">Dataword: <span class="text-emerald-400">${state.dataBits.join('')}</span></div>
-            <div class="text-zinc-300">Count of 1s: <span class="text-white font-bold">${m.onesCount}</span> (${m.onesCount % 2 === 0 ? 'Even' : 'Odd'})</div>
-            <div class="text-zinc-300">Parity Bit: <span class="text-violet-300 font-bold">${m.parityBit}</span></div>
-            <div class="pt-2 border-t border-[#22222c] text-emerald-300">TX = ${state.transmittedBits.map(x => x.bit).join('')}</div>
+          <div class="rounded-xl bg-obsidian-950 border border-zinc-800/90 p-4 space-y-2">
+            <div class="text-violet-300 font-semibold text-xs">1. Sender Encoding</div>
+            <div class="text-zinc-400">Dataword: <span class="text-emerald-400">${state.dataBits.join('')}</span></div>
+            <div class="text-zinc-400">Count of 1s: <span class="text-white">${m.onesCount}</span> (${m.onesCount % 2 === 0 ? 'Even' : 'Odd'})</div>
+            <div class="text-zinc-400">Parity Bit: <span class="text-violet-300 font-semibold">${m.parityBit}</span></div>
+            <div class="pt-2 border-t border-zinc-800/80 text-emerald-300">TX = ${state.transmittedBits.map(x => x.bit).join('')}</div>
           </div>
-          <div class="rounded-xl bg-[#09090b] border border-[#22222c] p-4 space-y-2">
-            <div class="text-cyan-400 font-semibold uppercase text-xs mb-1">2. Receiver Verification</div>
-            <div class="text-zinc-300">Received: <span class="text-amber-300">${state.receivedBits.map(x => x.bit).join('')}</span></div>
-            <div class="text-zinc-300">RX Count of 1s: <span class="text-white font-bold">${rx.rxOnes}</span> (${rx.rxOnes % 2 === 0 ? 'Even' : 'Odd'})</div>
-            <div class="text-zinc-300">Syndrome: <span class="${rx.valid ? 'text-emerald-400' : 'text-rose-400'} font-bold">${state.detectionResult.syndrome}</span></div>
-            <div class="pt-2 border-t border-[#22222c] text-zinc-400 text-[11px]">
+          <div class="rounded-xl bg-obsidian-950 border border-zinc-800/90 p-4 space-y-2">
+            <div class="text-cyan-300 font-semibold text-xs">2. Receiver Verification</div>
+            <div class="text-zinc-400">Received: <span class="text-amber-300">${state.receivedBits.map(x => x.bit).join('')}</span></div>
+            <div class="text-zinc-400">RX Count of 1s: <span class="text-white">${rx.rxOnes}</span> (${rx.rxOnes % 2 === 0 ? 'Even' : 'Odd'})</div>
+            <div class="text-zinc-400">Syndrome: <span class="${rx.valid ? 'text-emerald-400' : 'text-rose-400'} font-semibold">${state.detectionResult.syndrome}</span></div>
+            <div class="pt-2 border-t border-zinc-800/80 text-zinc-400 text-[11px]">
               ${state.detectionResult.verdictType === 'undetected_trap'
-                ? '⚠️ Even bit flips preserved parity (Parity blind spot).'
+                ? 'Even number of flips preserved parity (blind spot).'
                 : 'Detects any odd number of bit flips.'}
             </div>
           </div>
         `;
       } else if (state.method === 'crc') {
         formulaBadge.textContent = `CRC-3 Divisor G(x) = ${CRC_GENERATOR}`;
-        const stepsPreview = m.steps.slice(0, 3).map((st, idx) =>
-          `<div class="text-xs text-zinc-400">Step ${idx + 1}: <span class="text-zinc-200">${st.window}</span> ⊕ <span class="text-violet-400">${st.divisor}</span> → <span class="text-cyan-300">${st.remainder}</span></div>`
+        const stepsPreview = m.steps.slice(0, 4).map((st, idx) =>
+          `<div class="text-[11px] text-zinc-400">Step ${idx + 1}: <span class="text-zinc-200">${st.window}</span> ⊕ <span class="text-violet-400">${st.divisor}</span> → <span class="text-cyan-300">${st.remainder}</span></div>`
         ).join('');
-
         container.innerHTML = `
-          <div class="rounded-xl bg-[#09090b] border border-[#22222c] p-4 space-y-2">
-            <div class="text-violet-400 font-semibold uppercase text-xs mb-1">1. Modulo-2 Division (TX)</div>
-            <div class="text-zinc-300">Padded: <span class="text-emerald-400">${m.appended}</span></div>
-            <div class="space-y-1 bg-[#111116] p-2.5 rounded-lg border border-[#22222c]">${stepsPreview}</div>
-            <div class="pt-2 border-t border-[#22222c] text-violet-300 font-bold">CRC Remainder = ${m.remainder}</div>
+          <div class="rounded-xl bg-obsidian-950 border border-zinc-800/90 p-4 space-y-2">
+            <div class="text-violet-300 font-semibold text-xs">1. Modulo-2 Division (TX)</div>
+            <div class="text-zinc-400">Padded: <span class="text-emerald-400">${m.appended}</span></div>
+            <div class="space-y-1 bg-zinc-900/60 p-2.5 rounded-lg">${stepsPreview}</div>
+            <div class="pt-2 border-t border-zinc-800/80 text-violet-300 font-semibold">CRC Remainder = ${m.remainder}</div>
           </div>
-          <div class="rounded-xl bg-[#09090b] border border-[#22222c] p-4 space-y-2">
-            <div class="text-cyan-400 font-semibold uppercase text-xs mb-1">2. Receiver Division (RX)</div>
-            <div class="text-zinc-300">Received: <span class="text-amber-300">${rx.rxStr}</span></div>
-            <div class="text-zinc-300">Divisor: <span class="text-violet-400">${CRC_GENERATOR}</span></div>
-            <div class="text-zinc-300">Syndrome: <span class="${rx.valid ? 'text-emerald-400' : 'text-rose-400'} font-bold">${rx.remainder}</span></div>
-            <div class="pt-2 border-t border-[#22222c] text-zinc-400 text-[11px]">
-              ${rx.valid ? 'Syndrome == 000 → Frame accepted.' : 'Syndrome ≠ 000 → Burst/Bit error detected.'}
+          <div class="rounded-xl bg-obsidian-950 border border-zinc-800/90 p-4 space-y-2">
+            <div class="text-cyan-300 font-semibold text-xs">2. Receiver Division (RX)</div>
+            <div class="text-zinc-400">Received: <span class="text-amber-300">${rx.rxStr}</span></div>
+            <div class="text-zinc-400">Divisor: <span class="text-violet-400">${CRC_GENERATOR}</span></div>
+            <div class="text-zinc-400">Syndrome: <span class="${rx.valid ? 'text-emerald-400' : 'text-rose-400'} font-semibold">${rx.remainder}</span></div>
+            <div class="pt-2 border-t border-zinc-800/80 text-zinc-400 text-[11px]">
+              ${rx.valid ? 'Remainder == 000 → Valid frame.' : 'Remainder ≠ 000 → Error detected.'}
             </div>
           </div>
         `;
-      } else if (state.method === 'checksum') {
-        formulaBadge.textContent = `4-Bit Sum + 1's Complement`;
+      } else {
+        formulaBadge.textContent = `4-Bit Block Sum + 1's Complement`;
         container.innerHTML = `
-          <div class="rounded-xl bg-[#09090b] border border-[#22222c] p-4 space-y-2">
-            <div class="text-violet-400 font-semibold uppercase text-xs mb-1">1. Sender Checksum</div>
-            <div class="text-zinc-300">Blocks: <span class="text-emerald-400">[${m.blocks.join(', ')}]</span></div>
-            <div class="text-zinc-300">Wrapped Sum: <span class="text-white">${m.wrappedBin}</span></div>
-            <div class="text-zinc-300">Checksum: <span class="text-violet-300 font-bold">${m.checksum}</span></div>
-            <div class="pt-2 border-t border-[#22222c] text-emerald-300">TX = ${state.transmittedBits.map(x => x.bit).join('')}</div>
+          <div class="rounded-xl bg-obsidian-950 border border-zinc-800/90 p-4 space-y-2">
+            <div class="text-violet-300 font-semibold text-xs">1. Sender Checksum</div>
+            <div class="text-zinc-400">Blocks: <span class="text-emerald-400">[${m.blocks.join(', ')}]</span></div>
+            <div class="text-zinc-400">Wrapped Sum: <span class="text-white">${m.wrappedBin}</span></div>
+            <div class="text-zinc-400">Checksum: <span class="text-violet-300 font-semibold">${m.checksum}</span></div>
+            <div class="pt-2 border-t border-zinc-800/80 text-emerald-300">TX = ${state.transmittedBits.map(x => x.bit).join('')}</div>
           </div>
-          <div class="rounded-xl bg-[#09090b] border border-[#22222c] p-4 space-y-2">
-            <div class="text-cyan-400 font-semibold uppercase text-xs mb-1">2. Receiver Checksum</div>
-            <div class="text-zinc-300">RX Blocks: <span class="text-amber-300">[${rx.blocks.join(', ')}]</span></div>
-            <div class="text-zinc-300">Wrapped Sum: <span class="text-white">${rx.sumBin}</span></div>
-            <div class="text-zinc-300">Result: <span class="${rx.valid ? 'text-emerald-400' : 'text-rose-400'} font-bold">${rx.complement}</span></div>
-            <div class="pt-2 border-t border-[#22222c] text-zinc-400 text-[11px]">
-              ${rx.valid ? 'Complement == 0000 → Valid frame.' : 'Complement ≠ 0000 → Error detected.'}
+          <div class="rounded-xl bg-obsidian-950 border border-zinc-800/90 p-4 space-y-2">
+            <div class="text-cyan-300 font-semibold text-xs">2. Receiver Checksum</div>
+            <div class="text-zinc-400">RX Blocks: <span class="text-amber-300">[${rx.blocks.join(', ')}]</span></div>
+            <div class="text-zinc-400">Wrapped Sum: <span class="text-white">${rx.sumBin}</span></div>
+            <div class="text-zinc-400">Complement: <span class="${rx.valid ? 'text-emerald-400' : 'text-rose-400'} font-semibold">${rx.complement}</span></div>
+            <div class="pt-2 border-t border-zinc-800/80 text-zinc-400 text-[11px]">
+              ${rx.valid ? 'Complement == 0000 → Valid.' : 'Complement ≠ 0000 → Mismatch.'}
             </div>
           </div>
         `;
       }
     }
-// ... existing code ... -->
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function highlightPythonLine(rawLine) {
+      let commentPart = '';
+      let codePart = rawLine;
+      const hashIdx = rawLine.indexOf('#');
+      if (hashIdx !== -1) {
+        codePart = rawLine.slice(0, hashIdx);
+        commentPart = rawLine.slice(hashIdx);
+      }
+      let safeCode = escapeHtml(codePart);
+      safeCode = safeCode.replace(/("[^"]*")/g, '<span class="text-emerald-400">$1</span>');
+      safeCode = safeCode.replace(/\b(def|if|else|return)\b/g, '<span class="text-violet-400 font-semibold">$1</span>');
+      const safeComment = commentPart ? `<span class="text-zinc-500 italic">${escapeHtml(commentPart)}</span>` : '';
+      return safeCode + safeComment;
+    }
+
+    function getPythonScriptAndHighlight() {
+      const txStr = state.transmittedBits.map(x => x.bit).join('');
+      const rxStr = state.receivedBits.map(x => x.bit).join('');
+      const redStr = state.redundantBits.join('');
+
+      if (state.method === 'parity_even' || state.method === 'parity_odd') {
+        const mode = state.method === 'parity_even' ? 'EVEN' : 'ODD';
+        return {
+          fileName: 'parity_check_live.py',
+          lines: [
+            `def parity_control(data: str, mode="${mode}"):`,
+            `    ones = data.count('1')`,
+            `    parity = str(ones % 2) if mode == "EVEN" else str((ones + 1) % 2)`,
+            `    codeword = data + parity  # Append check bit`,
+            `    received = noisy_channel(codeword, error="${state.errorType}")`,
+            `    rx_ones = received.count('1')`,
+            `    syndrome = rx_ones % 2 if mode == "EVEN" else (rx_ones + 1) % 2`,
+            `    return "ACK" if syndrome == 0 else "NAK"`
+          ],
+          activeLine: [1, 3, 4, 6, 7][state.step],
+          vars: {
+            data: `"${state.dataBits.join('')}"`,
+            parity_bit: `"${redStr}"`,
+            codeword: `"${txStr}"`,
+            received: `"${rxStr}"`,
+            syndrome: `"${state.detectionResult.syndrome}"`,
+            decision: `"${state.detectionResult.verdictType === 'valid' ? 'ACK' : 'NAK'}"`
+          }
+        };
+      }
+
+      if (state.method === 'crc') {
+        return {
+          fileName: 'crc_modulo2_live.py',
+          lines: [
+            `def crc_check(data: str, gen="${CRC_GENERATOR}"):`,
+            `    padded = data + '0' * (len(gen) - 1)`,
+            `    crc = mod2_div(padded, gen)  # Sender remainder`,
+            `    codeword = data + crc`,
+            `    received = noisy_channel(codeword, error="${state.errorType}")`,
+            `    syndrome = mod2_div(received, gen)  # Receiver check`,
+            `    if int(syndrome, 2) == 0:`,
+            `        return "ACK"`,
+            `    return f"NAK (rem={syndrome})"`
+          ],
+          activeLine: [1, 3, 4, 5, 7][state.step],
+          vars: {
+            data: `"${state.dataBits.join('')}"`,
+            generator: `"${CRC_GENERATOR}"`,
+            crc_bits: `"${redStr}"`,
+            received: `"${rxStr}"`,
+            syndrome: `"${state.detectionResult.syndrome}"`,
+            decision: `"${state.detectionResult.verdictType === 'valid' ? 'ACK' : 'NAK'}"`
+          }
+        };
+      }
+
+      return {
+        fileName: 'checksum_live.py',
+        lines: [
+          `def internet_checksum(data: str):`,
+          `    blocks = split_4bit_blocks(data)`,
+          `    checksum = ones_complement(wrap_sum(blocks))`,
+          `    codeword = "".join(blocks) + checksum`,
+          `    received = noisy_channel(codeword, error="${state.errorType}")`,
+          `    rx_check = ones_complement(wrap_sum(split_4bit_blocks(received)))`,
+          `    return "ACK" if rx_check == "0000" else f"NAK ({rx_check})"`
+        ],
+        activeLine: [1, 2, 4, 5, 6][state.step],
+        vars: {
+          data: `"${state.dataBits.join('')}"`,
+          checksum: `"${redStr}"`,
+          codeword: `"${txStr}"`,
+          received: `"${rxStr}"`,
+          rx_check: `"${state.detectionResult.syndrome}"`,
+          decision: `"${state.detectionResult.verdictType === 'valid' ? 'ACK' : 'NAK'}"`
+        }
+      };
+    }
+
+    function renderPythonPanel() {
+      const py = getPythonScriptAndHighlight();
+      document.getElementById('pythonFileName').textContent = py.fileName;
+      document.getElementById('execLineBadge').textContent = `Line ${py.activeLine + 1}`;
+
+      document.getElementById('pythonCodeContainer').innerHTML = py.lines.map((line, idx) => {
+        const isActive = idx === py.activeLine;
+        const lineNum = String(idx + 1).padStart(2, '0');
+        return `
+          <div class="px-3 py-1 rounded-lg flex items-center gap-3 ${isActive ? 'code-line-active text-white' : 'text-zinc-400'}">
+            <span class="text-zinc-600 select-none w-5 text-right">${lineNum}</span>
+            <span class="w-3 text-violet-400 font-bold">${isActive ? '▶' : ''}</span>
+            <pre class="whitespace-pre font-mono">${highlightPythonLine(line)}</pre>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('liveVariablesGrid').innerHTML = Object.entries(py.vars).map(([k, v]) => {
+        const isErrVar = (k === 'syndrome' || k === 'rx_check') && state.detectionResult.errorDetected;
+        return `
+          <div class="bg-obsidian-950 border border-zinc-800/90 rounded-lg px-3 py-2 flex items-center justify-between gap-2 overflow-hidden">
+            <span class="text-zinc-400 truncate">${k}:</span>
+            <span class="${isErrVar ? 'text-rose-400 font-semibold' : 'text-cyan-300'} truncate">${v}</span>
+          </div>
+        `;
+      }).join('');
+
+      const outEl = document.getElementById('pythonConsoleOutput');
+      if (state.step < 3) {
+        outEl.className = 'text-zinc-400 leading-relaxed';
+        outEl.innerHTML = `>>> Transmitting ${state.transmittedBits.length}-bit frame... [Step ${state.step + 1}/5]`;
+      } else {
+        const v = state.detectionResult.verdictType;
+        outEl.className = v === 'valid' ? 'text-emerald-400' : v === 'detected' ? 'text-rose-400' : 'text-amber-300';
+        outEl.innerHTML = `>>> ${state.detectionResult.statusText} | Syndrome = ${state.detectionResult.syndrome}`;
+      }
+    }
+
+    const CONCEPTS_DATA = [
+      {
+        id: 'need_error_control',
+        cat: 'need',
+        title: 'Need for Error Control',
+        badge: 'Foundation',
+        desc: 'Physical links introduce noise and attenuation that flip bits; error control guarantees data integrity before delivery.',
+        liveMetric: () => `${state.transmittedBits.length}b frame protected by ${state.redundantBits.length}b check`
+      },
+      {
+        id: 'noisy_channel',
+        cat: 'need',
+        title: 'Noisy Channel',
+        badge: 'Medium',
+        desc: 'Any copper, fiber, or wireless medium affected by thermal noise, crosstalk, or electromagnetic spikes.',
+        liveMetric: () => `Mode: ${state.errorType.toUpperCase()} (${state.receivedBits.filter(b => b.flipped).length} flips)`
+      },
+      {
+        id: 'single_bit',
+        cat: 'errors',
+        title: 'Single-Bit Error',
+        badge: 'Error Type I',
+        desc: 'Only one bit in the transmitted data unit changes from 0 to 1 or 1 to 0 during transit.',
+        liveMetric: () => state.receivedBits.filter(b => b.flipped).length === 1 ? 'Active in channel' : '1-bit flip model'
+      },
+      {
+        id: 'burst_error',
+        cat: 'errors',
+        title: 'Burst Error',
+        badge: 'Error Type II',
+        desc: 'Two or more bits change; burst length spans from the first corrupted bit to the last corrupted bit.',
+        liveMetric: () => {
+          const flips = state.receivedBits.map((b, i) => b.flipped ? i : -1).filter(i => i !== -1);
+          return flips.length < 2 ? 'Requires ≥ 2 flips' : `Span: ${flips[flips.length - 1] - flips[0] + 1} bits`;
+        }
+      },
+      {
+        id: 'redundancy',
+        cat: 'terms',
+        title: 'Redundancy',
+        badge: 'Terminology',
+        desc: 'Extra check bits appended to user data so the receiver can mathematically verify frame integrity.',
+        liveMetric: () => `Overhead: ${Math.round((state.redundantBits.length / state.transmittedBits.length) * 100)}%`
+      },
+      {
+        id: 'syndrome',
+        cat: 'terms',
+        title: 'Syndrome',
+        badge: 'Terminology',
+        desc: 'Diagnostic remainder calculated at the receiver; non-zero indicates corruption occurred in transit.',
+        liveMetric: () => `Syndrome: ${state.detectionResult.syndrome}`
+      },
+      {
+        id: 'hamming_dist',
+        cat: 'terms',
+        title: 'Hamming Distance',
+        badge: 'Terminology',
+        desc: 'Count of bit positions where transmitted and received codewords differ (TX ⊕ RX).',
+        liveMetric: () => `d(TX, RX) = ${state.receivedBits.filter(b => b.flipped).length}`
+      },
+      {
+        id: 'arq_vs_fec',
+        cat: 'terms',
+        title: 'ARQ vs. FEC',
+        badge: 'Recovery',
+        desc: 'ARQ requests retransmission upon NAK; FEC uses extra redundancy to reconstruct errors locally.',
+        liveMetric: () => state.detectionResult.verdictType === 'valid' ? 'Action: Send ACK' : 'Action: Send NAK'
+      }
+    ];
+
     function renderTerminologyCards() {
       const grid = document.getElementById('terminologyGrid');
       const filtered = state.selectedConceptCat === 'all'
         ? CONCEPTS_DATA
         : CONCEPTS_DATA.filter(c => c.cat === state.selectedConceptCat);
 
-      grid.innerHTML = filtered.map(c => {
-        const isSelected = state.highlightedTermId === c.id;
-        return `
-          <div onclick="selectConceptCard('${c.id}')" class="cursor-pointer rounded-xl p-4 bg-[#09090b] border transition-all duration-200 flex flex-col justify-between gap-3 ${isSelected ? 'border-violet-500 ring-1 ring-violet-500/40 bg-violet-950/10' : 'border-[#22222c] hover:border-zinc-700'}">
-            <div>
-              <span class="inline-block text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-violet-500/10 text-violet-300 border border-violet-500/20 mb-2">${c.badge}</span>
-              <h3 class="text-sm font-bold text-white mb-1.5">${c.title}</h3>
-              <p class="text-xs text-zinc-400 leading-relaxed line-clamp-3">${c.desc}</p>
-            </div>
-            <div class="pt-2.5 border-t border-[#22222c] font-mono text-[11px] text-emerald-400">
-              ${c.liveMetric()}
-            </div>
+      grid.innerHTML = filtered.map(c => `
+        <div class="rounded-xl p-4 bg-obsidian-950 border border-zinc-800/90 flex flex-col justify-between gap-3">
+          <div>
+            <span class="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-violet-500/10 text-violet-300 border border-violet-500/20">${c.badge}</span>
+            <h3 class="text-sm font-semibold text-white mt-2 mb-1">${c.title}</h3>
+            <p class="text-xs text-zinc-400 leading-relaxed">${c.desc}</p>
           </div>
-        `;
-      }).join('');
+          <div class="pt-2.5 border-t border-zinc-800/80 font-mono text-[11px] text-emerald-400">
+            ${c.liveMetric()}
+          </div>
+        </div>
+      `).join('');
     }
-// ... existing code ... -->
+
+    function setStep(stepIdx) {
+      state.step = Math.max(0, Math.min(STEPS_META.length - 1, stepIdx));
+      renderAll();
+    }
+
+    function toggleChannelBit(index) {
+      state.noiseMask[index] = !state.noiseMask[index];
+      if (state.step < 2) state.step = 2;
+      recomputeReceiverAndRender();
+    }
+
+    function togglePlay() {
+      state.isPlaying = !state.isPlaying;
+      const playIcon = document.getElementById('iconPlay');
+      const pauseIcon = document.getElementById('iconPause');
+      const label = document.getElementById('playLabel');
+
+      if (state.isPlaying) {
+        playIcon.classList.add('hidden');
+        pauseIcon.classList.remove('hidden');
+        label.textContent = 'Pause';
+        state.timerId = setInterval(() => {
+          state.step = (state.step + 1) % STEPS_META.length;
+          renderAll();
+        }, state.speedMs);
+      } else {
+        stopPlay();
+      }
+    }
+
+    function stopPlay() {
+      state.isPlaying = false;
+      clearInterval(state.timerId);
+      document.getElementById('iconPlay').classList.remove('hidden');
+      document.getElementById('iconPause').classList.add('hidden');
+      document.getElementById('playLabel').textContent = 'Auto Play';
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const inputEl = document.getElementById('userDataInput');
+      inputEl.addEventListener('input', (e) => {
+        state.rawInput = e.target.value;
+        fullRecalculate(true);
+      });
+
+      document.querySelectorAll('.preset-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const val = btn.getAttribute('data-preset');
+          inputEl.value = val;
+          state.rawInput = val;
+          fullRecalculate(true);
+        });
+      });
+
+      document.getElementById('methodSelect').addEventListener('change', (e) => {
+        state.method = e.target.value;
+        fullRecalculate(true);
+      });
+
+      document.getElementById('errorTypeSelect').addEventListener('change', (e) => {
+        state.errorType = e.target.value;
+        state.noiseMask = generateNoiseMask(state.transmittedBits.length, state.errorType);
+        recomputeReceiverAndRender();
+      });
+
+      document.getElementById('btnInjectNoise').addEventListener('click', injectRandomNoise);
+      document.getElementById('btnPlayPause').addEventListener('click', togglePlay);
+
+      document.getElementById('btnStep').addEventListener('click', () => {
+        stopPlay();
+        state.step = (state.step + 1) % STEPS_META.length;
+        renderAll();
+      });
+
+      document.getElementById('btnReset').addEventListener('click', () => {
+        stopPlay();
+        state.step = 0;
+        fullRecalculate(true);
+      });
+
+      document.getElementById('speedRange').addEventListener('input', (e) => {
+        state.speedMs = 2400 - parseInt(e.target.value, 10);
+        if (state.isPlaying) {
+          stopPlay();
+          togglePlay();
+        }
+      });
+
       document.querySelectorAll('.cat-tab').forEach(tab => {
         tab.addEventListener('click', () => {
           document.querySelectorAll('.cat-tab').forEach(t => {
-            t.className = 'cat-tab px-3.5 py-1.5 rounded-lg text-xs font-medium bg-[#09090b] text-zinc-300 border border-[#22222c] hover:border-zinc-700 transition';
+            t.className = 'cat-tab px-3 py-1.5 rounded-lg text-xs font-medium bg-zinc-800/80 text-zinc-300 hover:bg-zinc-700 transition';
           });
-          tab.className = 'cat-tab px-3.5 py-1.5 rounded-lg text-xs font-medium bg-violet-600 text-white transition';
+          tab.className = 'cat-tab px-3 py-1.5 rounded-lg text-xs font-medium bg-violet-600 text-white transition';
           state.selectedConceptCat = tab.getAttribute('data-cat');
           renderTerminologyCards();
         });
       });
 
-      // Boot initial live state at step 3 so user immediately sees full pipeline + math + Python trace
-      state.step = 3;
       fullRecalculate(true);
     });
   </script>
